@@ -697,14 +697,16 @@ const InitialPageFreeAds: React.FC = () => {
                                               </View>
 
                                           </View>
+                                          <Footer />
                                       </>
                                   );
                               }
+
                               }
                     />
 
                 </Container>
-                <Footer/>
+
             </KeyboardAwareScrollView>
 
             <View style={{

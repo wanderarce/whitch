@@ -714,6 +714,7 @@ const ListFreeAds: React.FC = () => {
                                               </View>
 
                                           </View>
+                                          <Footer />
                                       </>
                                   );
                               }
@@ -721,7 +722,7 @@ const ListFreeAds: React.FC = () => {
                     />
 
                 </Container>
-                <Footer/>
+
             </KeyboardAwareScrollView>
 
             <View style={{

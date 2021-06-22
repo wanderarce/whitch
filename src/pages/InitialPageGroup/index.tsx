@@ -325,7 +325,7 @@ const InitialPageGroup: React.FC = () => {
                     <Icon name="align-justify"
                           size={30}
                           color={mainColor}
-                          onPress={() => navigation.toggleDrawer()
+                          onPress={() => navigation.navigate('MainMenu')
                         }
                     />
                 </View>
@@ -668,14 +668,14 @@ const InitialPageGroup: React.FC = () => {
                                               }
 
                                           </View>
-
+                                          <Footer />
                                       </>
                                   )
                                       ;
                               }}/>
 
                 </Container>
-                <Footer/>
+
             </KeyboardAwareScrollView>
             <View style={{
                 backgroundColor: "white",
