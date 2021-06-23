@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "android": "react-native run-android ",
+        "androidp": "react-native run-android --variant release ",
         "ios": "react-native run-ios",
         "start": "react-native start --reset-cache",
         "test": "jest",
@@ -11,6 +12,7 @@
     },
     "dependencies": {
         "@react-native-community/async-storage": "^1.11.0",
+        "@react-native-community/checkbox": "^0.5.8",
         "@react-native-community/datetimepicker": "^3.0.8",
         "@react-native-community/masked-view": "^0.1.10",
         "@react-native-community/toolbar-android": "^0.1.0-rc.2",
@@ -23,6 +25,7 @@
         "jetifier": "^1.6.6",
         "react": "16.13.1",
         "react-native": "^0.64.2",
+        "react-native-bouncy-checkbox": "^2.1.2",
         "react-native-document-picker": "^5.0.3",
         "react-native-elements": "^3.2.0",
         "react-native-fs": "^2.16.6",

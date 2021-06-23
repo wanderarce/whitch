@@ -228,6 +228,7 @@ const InitialPageGroup: React.FC = () => {
     }
 
     const loadAds = async () => {
+      alert(new Date());
       setLoading(true);
 
         const profile = await myProfile();
@@ -248,6 +249,7 @@ const InitialPageGroup: React.FC = () => {
 
         setAds(adsByGroup);
         setLoading(false);
+        alert(new Date());
     };
 
     const loadProfile = async () => {
@@ -627,14 +629,14 @@ const InitialPageGroup: React.FC = () => {
                                               </View>
 
 
-                                              {item.comments !== undefined && item.comments.map((itemComment) => (
+                                              {item != null && item.comments !== undefined && item.comments !== null  && item.comments.map((itemComment, index) => (
                                                   <View style={{
                                                       flexDirection: 'row',
                                                       borderRadius: 3,
                                                       backgroundColor: 'white',
                                                       marginTop: 10,
                                                       padding: 5,
-                                                  }}>
+                                                  }} key={index}>
 
                                                       <View style={{
                                                           width: window.width * 0.1,
@@ -672,7 +674,8 @@ const InitialPageGroup: React.FC = () => {
                                       </>
                                   )
                                       ;
-                              }}/>
+                              }
+                              }/>
 
                 </Container>
 

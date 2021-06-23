@@ -1,7 +1,8 @@
 import React, {forwardRef, useEffect, useRef, useState} from "react";
-import {CheckBox as NativeCheckbox, Dimensions, Text, TextInputProps, View} from "react-native";
+import { Dimensions, Text, TextInputProps, View} from "react-native";
 import {useField} from "@unform/core";
 import {checkBoxStyles} from "../../pages/EditMyProfile/styles";
+import CheckBox  from '@react-native-community/checkbox';
 
 const window = Dimensions.get('window');
 
@@ -74,7 +75,8 @@ const Checkbox: React.RefForwardingComponent<InputRef, InputProps> = ({name, ico
             }}>
 
                 <View style={{width: window.width * 0.08}}>
-                    <NativeCheckbox
+                    <CheckBox
+                        name={"a"}
                         value={isChecked}
                         style={checkBoxStyles.checkbox}
                         onValueChange={(option) => {
