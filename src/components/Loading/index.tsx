@@ -2,7 +2,7 @@ import React, {Component,} from 'react';
 import PropTypes from 'prop-types';
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import {Image, ActivityIndicator, StyleSheet, Text, View, ImageProps, Modal } from "react-native";
-import footerLogo from "../../assets/ic_launcher.png";
+import loadingImg from "../../assets/loading.png";
 import t from 'prop-types';
 import {styles} from './styles';
 import { style } from '../Form/style';
@@ -41,24 +41,18 @@ class Loading extends Component {
           <View style={{width: "100%",
           height:"100%"
         }}>
-            <Image source={footerLogo}
+            <Image source={loadingImg}
                 style={
                     {
-                        marginLeft:"34%",
-                        marginTop:"60%",
-                        width: "30%",
-                        height: "20%",
-                        resizeMode: "cover",
+                        width: "100%",
+                        height: "100%",
+                        resizeMode: "center",
                         alignContent: "center",
 
                     }
                 }/>
 
-            <Text style={{color: "blue",
-            fontSize: 20,
-            alignContent:"center",
-            textAlign:"center",
-            fontWeight: "bold"}} >CARREGANDO</Text>
+
           </View>
         </View>
                </Modal>
