@@ -10,6 +10,7 @@ export const Title = styled.Text`
   color: #FFF;
   font-family: 'RobotoSlab-Medium';
   margin: 10px 0 10px;
+
 `;
 
 export const Label = styled.Text`
@@ -25,4 +26,8 @@ export const MenuLabel = styled.Text`
   font-size: 12px;
   padding: 06px 0px 0px
   color: #333333;
+  &:hover {
+    color: pink')};
+  }
+
 `;

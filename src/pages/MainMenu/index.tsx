@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Image, View} from 'react-native';
+import {Alert, Image, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 import Icon from 'react-native-vector-icons/Feather';
@@ -299,12 +299,16 @@ const MainMenu: React.FC = () => {
                                 flexDirection: 'row'
                             }}>
                                 <View>
-                                    <View style={{width: window.width * 0.88, height: 30, alignItems: "flex-end"}}>
+                                    <View style={{width: window.width * 0.88, height: 35, alignItems: "flex-end", }}>
+                                        <TouchableOpacity >
                                         <MenuLabel
-                                            onPress={() => navigation.navigate('MyPoints')}
+
+                                            onPress={() =>{
+                                              navigation.navigate('MyPoints');}}
                                         >
-                                            {profile.isAdvertiser ? 'Meus pontos' : ' Vale Pontos'}
+                                            {profile.isAdvertiser ? 'Meus pontos' : ' Vales Pontos'}
                                         </MenuLabel>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
 

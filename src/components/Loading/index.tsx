@@ -38,21 +38,28 @@ class Loading extends Component {
           animationType={props.animationType}
         >
         <View style={styles.modalOverlay}>
-          <Image source={footerLogo}
+          <View style={{width: "100%",
+          height:"100%"
+        }}>
+            <Image source={footerLogo}
                 style={
                     {
-                        width: "25%",
-                        height: "15%",
-                        position: 'relative',
-                        top: '30%',
-                        left: '36%',
+                        marginLeft:"34%",
+                        marginTop:"60%",
+                        width: "30%",
+                        height: "20%",
                         resizeMode: "cover",
                         alignContent: "center",
+
                     }
                 }/>
-          <Text style={{color: "blue", position: 'relative', top: "33%", left: "30%",
-          fontSize: 20,
-          fontWeight: "bold"}} >CARREGANDO</Text>
+
+            <Text style={{color: "blue",
+            fontSize: 20,
+            alignContent:"center",
+            textAlign:"center",
+            fontWeight: "bold"}} >CARREGANDO</Text>
+          </View>
         </View>
                </Modal>
           </View>

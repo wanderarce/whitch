@@ -228,7 +228,7 @@ const InitialPageGroup: React.FC = () => {
     }
 
     const loadAds = async () => {
-      alert(new Date());
+
       setLoading(true);
 
         const profile = await myProfile();
@@ -249,7 +249,7 @@ const InitialPageGroup: React.FC = () => {
 
         setAds(adsByGroup);
         setLoading(false);
-        alert(new Date());
+
     };
 
     const loadProfile = async () => {
