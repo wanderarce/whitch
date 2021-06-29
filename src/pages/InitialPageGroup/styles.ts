@@ -27,3 +27,4 @@ export const AdsBox = styled.View`
   font-family: 'RobotoSlab-Medium';
   margin: 20px 0 24px;
 `;
+

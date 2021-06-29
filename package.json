@@ -34,6 +34,7 @@
         "react-native-iphone-x-helper": "^1.2.1",
         "react-native-keyboard-aware-scroll-view": "^0.9.2",
         "react-native-loading-spinner-overlay": "^2.0.0",
+        "react-native-modal": "^12.0.2",
         "react-native-modal-selector": "^2.0.3",
         "react-native-paper": "^4.9.2",
         "react-native-reanimated": "^1.9.0",

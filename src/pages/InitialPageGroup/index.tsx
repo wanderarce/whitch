@@ -1,13 +1,13 @@
-import {Alert, Dimensions, FlatList, Image, Linking, Share, TextInput, View} from 'react-native';
+import {Modal, Alert, Dimensions, FlatList, Image, Linking, Share, TextInput, View, Text, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import {Container} from "./styles";
 import logoImg from "../../assets/logo-dark-fonte.png";
 import { NavigationContainer, DrawerActions } from '@react-navigation/native';
-
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 import React, {useEffect, useRef, useState} from "react";
+import ModalCustom from "../../components/ModalCustom/index";
 import {Label} from "../ListMyAds/styles";
 import {Hr} from "../../components/Hr/styles";
 import {
@@ -40,6 +40,7 @@ import pointAdsImg from "../../assets/menu/VALE-PONTOS.png";
 import whatsappImg from "../../assets/adsIcones/whatsapp.png";
 import {Tooltip, Text as TextTip} from "react-native-elements";
 import Loading from '../../components/Loading';
+import Button from '../../components/Button';
 
 const window = Dimensions.get('window');
 
@@ -58,6 +59,8 @@ const InitialPageGroup: React.FC = () => {
 
     const [termSearch, setTermSearch] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isVisible, setVisible] = useState(false);
+    const [voucher, setVoucher] = useState("");
 
     const addCommentLock = (id) => {
         setCommentsLocked([...commentsLocked, id])
@@ -449,7 +452,7 @@ const InitialPageGroup: React.FC = () => {
                                                                       backgroundColor: mainColor,
                                                                       position: "relative",
                                                                        marginTop: -53,
-                                                                  marginLeft: 15,
+                                                                      marginLeft: 15,
                                                                       width: window.width * 0.09,
                                                                       textAlign: "center",
                                                                       display: item.comments?.length ?? 0 > 0 ? "flex" : "none",
@@ -459,15 +462,34 @@ const InitialPageGroup: React.FC = () => {
                                                               </Label>
                                                           </View>
 
-                                                          <Tooltip
-                                                              backgroundColor={mainColor}
-                                                              popover={<TextTip>{item.voucher}</TextTip>}>
 
                                                               <View style={{
                                                                   width: window.width * 0.14,
                                                                   height: 40,
 
+                                                              }}
+                                                              onTouchEnd={()=>{
+                                                                setVisible(true);
+                                                                setVoucher(`Apresente o voucher ${item.voucher}
+                                                                e garanta essa promoção.`);
                                                               }}>
+                                                                <View onTouchStart={()=>{setVisible(false);}}>
+                                                                      <ModalCustom
+                                                                        modalVisible={isVisible}
+                                                                        value={voucher}
+                                                                        children={<Button style={{position:'relative',
+                                                                        bottom: 65,
+                                                                        left:95,
+                                                                        backgroundColor:"#000",
+                                                                        height:25,
+                                                                        width:25,
+                                                                        borderRadius:20}}
+                                                                        >X</Button>
+                            }
+                                                                        >
+                                                                      </ModalCustom>
+
+                                                                  </View>
                                                                   <Image source={voucherImg}
                                                                          style={{
                                                                              width: "100%",
@@ -475,7 +497,7 @@ const InitialPageGroup: React.FC = () => {
                                                                              resizeMode: "contain"
                                                                          }}/>
                                                               </View>
-                                                          </Tooltip>
+
 
                                                           <View style={{
                                                               width: window.width * 0.14,
@@ -510,23 +532,43 @@ const InitialPageGroup: React.FC = () => {
                                                                      }}/>
                                                           </View>
 
-                                                          <Tooltip
-                                                              backgroundColor={mainColor}
-                                                              popover={<TextTip>{item.point_coins}</TextTip>}>
 
-                                                              <View style={{
+                                                          <View style={{
                                                                   width: window.width * 0.14,
                                                                   height: 40,
+                                                              }}
+                                                              onTouchEnd={()=>{
+                                                                setVisible(true);
+                                                                setVoucher(`Ganhe  ${item.point_coins} pontos \ncom esta promoção.`);
+                                                            }}
+                                                          >
+                                                        <View onTouchStart={()=>{setVisible(false);}}>
+                                                          <ModalCustom
+                                                            modalVisible={isVisible}
+                                                            value={voucher}
+                                                            children={<Button style={{position:'relative',
+                                                            bottom: 65,
+                                                            left:95,
+                                                            backgroundColor:"#000",
+                                                            height:25,
+                                                            width:25,
+                                                            borderRadius:20}}
+                                                            >X</Button>
+                }
+                                                            >
+                                                          </ModalCustom>
 
-                                                              }}>
+                                                      </View>
                                                                   <Image source={iconePontos}
                                                                          style={{
                                                                              width: "100%",
                                                                              height: "100%",
                                                                              resizeMode: "contain"
-                                                                         }}/>
+                                                                         }}
+
+                                                                    />
                                                               </View>
-                                                          </Tooltip>
+
 
 
                                                           <View style={{
@@ -771,3 +813,51 @@ const InitialPageGroup: React.FC = () => {
 }
 
 export default InitialPageGroup;
+
+const styles = StyleSheet.create({
+  centeredView: {
+    //flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "30%",
+    backgroundColor: "#fafafa",
+    width:200,
+    height:200
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: mainColor,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 15,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#F197FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    color:"white",
+    marginBottom: 15,
+    textAlign: "center"
+  }
+});
