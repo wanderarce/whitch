@@ -1,4 +1,4 @@
-import {Alert, FlatList, Image, Linking, Share, TextInput, View} from 'react-native';
+import {Alert, FlatList, Image, Linking, Share, TextInput, View, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import {Container, Title} from "./styles";
@@ -46,6 +46,8 @@ const ListFreeAds: React.FC = () => {
     const [cityIdSelect, setCityIdSelected] = useState(undefined);
     const [orderSelected, setOrderSelected] = useState(undefined);
     const [loading, setLoading] = useState(false);
+    const [showMore, setShowMore] = useState(true);
+    const [ofsset, setOffset] = useState(4);
 
     const orders = [
         {name: 'N/A', value: undefined},
@@ -292,6 +294,48 @@ const ListFreeAds: React.FC = () => {
         return ads;
     }
 
+    renderComment = (comments) => {
+
+      if(comments.length >= ofsset){
+        setShowMore(true);
+       }else{
+         setShowMore(false);
+       }
+      return comments.map((itemComment, index) => (
+        <View style={{
+            flexDirection: 'row',
+            borderRadius: 3,
+            backgroundColor: 'white',
+            marginTop: 10,
+            padding: 5,
+
+        }}
+        key={index}>
+
+            <View style={{
+                width: window.width * 0.1,
+            }}>
+                <View style={{width: 130}}>
+                    <Image
+                        source={itemComment.userInfo.profile_img_url ? {uri: itemComment.userInfo.profile_img_url} : logoCircle}
+                           style={{
+                               width: 35,
+                               height: 35,
+                               borderRadius: 50,
+                           }}/>
+                </View>
+            </View>
+            <View style={{
+                width: window.width * 0.72,
+            }}>
+                <Label
+                    style={{color: "black", textAlign: "justify"}}>
+                    {itemComment.comment}
+                </Label>
+            </View>
+        </View>
+    ));
+    }
 
     useEffect(function () {
         loadFreeAds();
@@ -677,40 +721,14 @@ const ListFreeAds: React.FC = () => {
                                                   </View>
 
 
-                                                  {item.comments !== undefined && item.comments.map((itemComment) => (
-                                                      <View style={{
-                                                          flexDirection: 'row',
-                                                          borderRadius: 3,
-                                                          backgroundColor: 'white',
-                                                          marginTop: 10,
-                                                          padding: 5,
-                                                      }}>
-
-                                                          <View style={{
-                                                              width: window.width * 0.1,
-                                                          }}>
-                                                              <View style={{width: 130}}>
-                                                                  <Image
-                                                                      source={itemComment.userInfo.profile_img_url ? {uri: itemComment.userInfo.profile_img_url} : logoCircle}
-                                                                         style={{
-                                                                             width: 35,
-                                                                             height: 35,
-                                                                             borderRadius: 50,
-                                                                         }}/>
-                                                              </View>
-                                                          </View>
-                                                          <View style={{
-                                                              width: window.width * 0.72,
-                                                          }}>
-                                                              <Label
-                                                                  style={{color: "black", textAlign: "justify"}}>
-                                                                  {itemComment.comment}
-                                                              </Label>
-                                                          </View>
-                                                      </View>
-                                                  ))
-                                                  }
-
+                                                  {item.comments !== undefined
+                                                  && renderComment(item.comments)}
+                                                  <View style={{display: (showMore == true) ? 'flex' : 'none'}}  onTouchEnd={()=>{
+                                                  setOffset(ofsset+4);
+                                                   renderComment(item.comments);
+                                                  }}>
+                                                    <Text >Carregar mais</Text>
+                                                  </View>
                                               </View>
 
                                           </View>

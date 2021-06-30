@@ -45,6 +45,8 @@ const InitialPageFreeAds: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
     const [termSearch, setTermSearch] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showMore,setShowMore] = useState(true);
+    const [ofsset, setOffset] = useState(4);
 
     const registerLike = async (item) => {
 
@@ -299,6 +301,52 @@ const InitialPageFreeAds: React.FC = () => {
         loadProfile();
     }, [])
 
+    const renderComment = (comments) => {
+      if(comments.length >= ofsset){
+        setShowMore(true);
+       }else{
+         setShowMore(false);
+       }
+      return comments.slice(0,ofsset).map((itemComment, index) => (
+        <View style={{
+            flexDirection: 'row',
+            borderRadius: 3,
+            backgroundColor: 'white',
+            marginTop: 10,
+            padding: 5,
+        }}
+        key={index}>
+
+            <View style={{
+                width: window.width * 0.1,
+            }}>
+                <View
+
+                    onTouchEnd={() => {
+                        showMemberProfile(itemComment.user_id)
+                    }}
+
+                    style={{width: 130}}>
+                    <Image
+                        source={itemComment.userInfo.profile_img_url ? {uri: itemComment.userInfo.profile_img_url} : logoCircle}
+                           style={{
+                               width: 35,
+                               height: 35,
+                               borderRadius: 50,
+                           }}/>
+                </View>
+            </View>
+            <View style={{
+                width: window.width * 0.72,
+            }}>
+                <Label
+                    style={{color: "black", textAlign: "justify"}}>
+                    {itemComment.comment}
+                </Label>
+            </View>
+        </View>
+    ));
+    }
     return (
         <>
             <Loading visible={loading}  dismiss={!loading}/>
@@ -654,45 +702,14 @@ const InitialPageFreeAds: React.FC = () => {
                                                   </View>
 
 
-                                                  {item.comments !== undefined && item.comments.map((itemComment) => (
-                                                      <View style={{
-                                                          flexDirection: 'row',
-                                                          borderRadius: 3,
-                                                          backgroundColor: 'white',
-                                                          marginTop: 10,
-                                                          padding: 5,
-                                                      }}>
-
-                                                          <View style={{
-                                                              width: window.width * 0.1,
-                                                          }}>
-                                                              <View
-
-                                                                  onTouchEnd={() => {
-                                                                      showMemberProfile(itemComment.user_id)
-                                                                  }}
-
-                                                                  style={{width: 130}}>
-                                                                  <Image
-                                                                      source={itemComment.userInfo.profile_img_url ? {uri: itemComment.userInfo.profile_img_url} : logoCircle}
-                                                                         style={{
-                                                                             width: 35,
-                                                                             height: 35,
-                                                                             borderRadius: 50,
-                                                                         }}/>
-                                                              </View>
-                                                          </View>
-                                                          <View style={{
-                                                              width: window.width * 0.72,
-                                                          }}>
-                                                              <Label
-                                                                  style={{color: "black", textAlign: "justify"}}>
-                                                                  {itemComment.comment}
-                                                              </Label>
-                                                          </View>
-                                                      </View>
-                                                  ))
+                                                  {item.comments !== undefined
+                                                   && renderComment(item.comments)
                                                   }
+                                                   <View style={{display: (showMore == true) ? 'flex' : 'none'}}  onTouchEnd={()=>{
+                                                 setOffset(ofsset+4);
+                                                 renderComment(item.comments);
+                                                }}
+                                                ><Text >Carregar mais</Text></View>
 
                                               </View>
 
