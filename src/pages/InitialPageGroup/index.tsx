@@ -41,6 +41,7 @@ import whatsappImg from "../../assets/adsIcones/whatsapp.png";
 import {Tooltip, Text as TextTip} from "react-native-elements";
 import Loading from '../../components/Loading';
 import Button from '../../components/Button';
+import { sub } from 'react-native-reanimated';
 
 const window = Dimensions.get('window');
 
@@ -68,19 +69,24 @@ const InitialPageGroup: React.FC = () => {
     const [size, setSize] = useState(0);
     const [ofsset, setOffset] = useState(4);
     const [currentIndex, setCurrentIndex] = useState(0);
-
+    const [subList, setSublist] = useState([]);
+    const [showMore, setShowMore] = useState(true);
     const renderViewMore = (comments) => {
         let next  = comments.length - size;
-        return (<View onTouchEnd={()=>{ setOffset((next < 4) ? offset + next : ofsset + 4 );}}>
+        return (<View onTouchEnd={()=>{ setOffset((next < 4) ? ofsset + next : ofsset + 4 );
+        renderComment(comments);}}>
           <Text>Carregar mais</Text>
         </View>);
 
     }
     const renderComment = (comments) => {
 
-      let data = comments.slice(0, ofsset);
-      setSize(comments.length);
-      let item=  data.map((itemComment, index) => (
+      if(comments.length >= ofsset){
+       setShowMore(true);
+      }else{
+        setShowMore(false);
+      }
+      return comments.slice(0,ofsset).map((itemComment, index) => (
           <View style={{
             flexDirection: 'row',
             borderRadius: 3,
@@ -114,11 +120,12 @@ const InitialPageGroup: React.FC = () => {
                 {itemComment.comment}
               </Label>
           </View>
-            {data.length < size && data.lenght == ofsset && renderViewMore(comments)}
-        </View>
 
-        ));
-        return item;
+          </View>
+          ));
+
+          //this.setState();
+        //retur item;
     }
     const addCommentLock = (id) => {
         setCommentsLocked([...commentsLocked, id])
@@ -735,7 +742,11 @@ const InitialPageGroup: React.FC = () => {
                                                && item.comments !== null
                                                && renderComment(item.comments)
                                               }
-
+                                               <View style={{display: (showMore == true) ? 'flex' : 'none'}}  onTouchEnd={()=>{
+                                                 setOffset(ofsset+4);
+                                                 renderComment(item.comments);
+                                                }}
+                                                ><Text >Carregar mais</Text></View>
 
                                           </View>
                                           <Footer />
