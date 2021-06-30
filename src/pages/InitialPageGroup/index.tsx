@@ -46,6 +46,9 @@ const window = Dimensions.get('window');
 
 
 const InitialPageGroup: React.FC = () => {
+
+
+
     const navigation = useNavigation();
     const commentRef = useRef<TextInput>(null);
     const searchRef = useRef<TextInput>(null);
@@ -62,6 +65,61 @@ const InitialPageGroup: React.FC = () => {
     const [isVisible, setVisible] = useState(false);
     const [voucher, setVoucher] = useState("");
 
+    const [size, setSize] = useState(0);
+    const [ofsset, setOffset] = useState(4);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const renderViewMore = (comments) => {
+        let next  = comments.length - size;
+        return (<View onTouchEnd={()=>{ setOffset((next < 4) ? offset + next : ofsset + 4 );}}>
+          <Text>Carregar mais</Text>
+        </View>);
+
+    }
+    const renderComment = (comments) => {
+
+      let data = comments.slice(0, ofsset);
+      setSize(comments.length);
+      let item=  data.map((itemComment, index) => (
+          <View style={{
+            flexDirection: 'row',
+            borderRadius: 3,
+            backgroundColor: 'white',
+            marginTop: 10,
+            padding: 5,
+            }} key={index}>
+            <View style={{
+              width: window.width * 0.1,
+            }}>
+              <View
+                onTouchEnd={() => {
+                    showMemberProfile(itemComment.user_id)
+                }}
+
+                style={{width: 130}}>
+                <Image
+                    source={itemComment.userInfo.profile_img_url ? {uri: itemComment.userInfo.profile_img_url} : logoCircle}
+                    style={{
+                        width: 35,
+                        height: 35,
+                        borderRadius: 50,
+                    }}/>
+              </View>
+            </View>
+            <View style={{
+              width: window.width * 0.72,
+            }}>
+              <Label
+                style={{color: "black", textAlign: "justify"}}>
+                {itemComment.comment}
+              </Label>
+          </View>
+            {data.length < size && data.lenght == ofsset && renderViewMore(comments)}
+        </View>
+
+        ));
+        return item;
+    }
     const addCommentLock = (id) => {
         setCommentsLocked([...commentsLocked, id])
         console.log(commentsLocked);
@@ -370,8 +428,10 @@ const InitialPageGroup: React.FC = () => {
 
                 <Container style={{backgroundColor: "#FFF"}}>
 
-                    <FlatList data={ads} keyExtractor={((item, index) => item.id.toString())}
-                              renderItem={({item}) => {
+                    <FlatList data={ads}
+                    keyExtractor={((item, index) => item.id.toString())}
+                              renderItem={
+                                ({item}) => {
 
                                   return (
                                       <>
@@ -671,45 +731,11 @@ const InitialPageGroup: React.FC = () => {
                                               </View>
 
 
-                                              {item != null && item.comments !== undefined && item.comments !== null  && item.comments.map((itemComment, index) => (
-                                                  <View style={{
-                                                      flexDirection: 'row',
-                                                      borderRadius: 3,
-                                                      backgroundColor: 'white',
-                                                      marginTop: 10,
-                                                      padding: 5,
-                                                  }} key={index}>
-
-                                                      <View style={{
-                                                          width: window.width * 0.1,
-                                                      }}>
-                                                          <View
-
-                                                              onTouchEnd={() => {
-                                                                  showMemberProfile(itemComment.user_id)
-                                                              }}
-
-                                                              style={{width: 130}}>
-                                                              <Image
-                                                                  source={itemComment.userInfo.profile_img_url ? {uri: itemComment.userInfo.profile_img_url} : logoCircle}
-                                                                  style={{
-                                                                      width: 35,
-                                                                      height: 35,
-                                                                      borderRadius: 50,
-                                                                  }}/>
-                                                          </View>
-                                                      </View>
-                                                      <View style={{
-                                                          width: window.width * 0.72,
-                                                      }}>
-                                                          <Label
-                                                              style={{color: "black", textAlign: "justify"}}>
-                                                              {itemComment.comment}
-                                                          </Label>
-                                                      </View>
-                                                  </View>
-                                              ))
+                                              {item != null && item.comments !== undefined
+                                               && item.comments !== null
+                                               && renderComment(item.comments)
                                               }
+
 
                                           </View>
                                           <Footer />
