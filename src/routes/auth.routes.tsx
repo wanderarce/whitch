@@ -379,6 +379,22 @@ if(profile == null || profile == undefined){
           }
 
           />
+          <Drawer.Item
+            label="SEJA UM ANUNCIANTE"
+            onPress={() => props.navigation.navigate('CreateAdvertiser')}
+            style={styles.labelStyle }
+            icon={({  color, size }) =>
+              <Image
+              height={size}
+              width={size}
+              resizeMethod="auto"
+              source={freeAdsImg}
+              style={{height: 25, width:25, resizeMode:'contain',
+             marginRight: -20}}
+            />
+          }
+            />
+
 
           <Drawer.Item
             label="ANÚNCIOS MARCADOS LEGAL"

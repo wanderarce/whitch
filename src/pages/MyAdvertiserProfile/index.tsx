@@ -12,6 +12,7 @@ import logoCircle from "../../assets/logo-circle.png";
 import editProfileImg from "../../assets/edit-profile.png";
 import { getAdvertiser, loadMainProfile, mainColor} from "../../utils/Util";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import Profile from "../Profile";
 
 const window = Dimensions.get('window');
 
@@ -43,12 +44,15 @@ const advertiserLoading: AdvertiserInfo = () => {
 const MyAdvertiserProfile: React.FC = () => {
     const navigation = useNavigation();
     const [advertiser, setAdvertiser] = useState({});
+    const [profile, setProfile] = useState({});
 
     const loadAdvertiser = async () => {
-        const profile = await loadMainProfile();
-        const advertiser = await getAdvertiser(profile.advertiser_id);
-        // console.log(11111, advertiser);
-        setAdvertiser(advertiser);
+        let profile = await loadMainProfile();
+        if(profile != null && profile != undefined) {
+         const advertiser = await getAdvertiser(profile.advertiser_id);
+         setProfile(profile);
+         setAdvertiser(advertiser);
+        }
     };
 
 
@@ -82,10 +86,8 @@ const MyAdvertiserProfile: React.FC = () => {
                           onPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate('SignIn')}
                     />
                 </View>
-
             </View>
             <Container>
-
                 <View style={{
                     flexDirection: 'row',
                     paddingBottom: 20
@@ -114,7 +116,7 @@ const MyAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 23}}
                                     />
-                                    <Label> TELEFONE: </Label>{advertiser.phone}
+                                    <Label> TELEFONE: </Label>{advertiser?.phone}
                                 </Title>
                             </AdvertiserView>
 
@@ -126,7 +128,7 @@ const MyAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 23}}
                                     />
-                                    <Label> ENDEREÇO: </Label> {advertiser.address}
+                                    <Label> ENDEREÇO: </Label> {advertiser?.address}
                                 </Title>
                             </AdvertiserView>
 
@@ -138,7 +140,7 @@ const MyAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 23}}
                                     />
-                                    <Label> E-MAIL: </Label>{advertiser.email}
+                                    <Label> E-MAIL: </Label>{advertiser?.email}
                                 </Title>
                             </AdvertiserView>
 
@@ -150,7 +152,7 @@ const MyAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 23}}
                                     />
-                                    <Label> SEGMENTO: </Label> {advertiser.segment}
+                                    <Label> SEGMENTO: </Label> {advertiser?.segment}
                                 </Title>
                             </AdvertiserView>
 
@@ -162,7 +164,7 @@ const MyAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 20}}
                                     />
-                                    <Label> CNPJ: </Label>{advertiser.registered_number}
+                                    <Label> CNPJ: </Label>{advertiser?.registered_number}
                                 </Title>
                             </AdvertiserView>
 
@@ -174,7 +176,7 @@ const MyAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 23}}
                                     />
-                                    <Label> RAZAO SOCIAL: </Label> {advertiser.company_name}
+                                    <Label> RAZAO SOCIAL: </Label> {advertiser?.company_name}
                                 </Title>
                             </AdvertiserView>
 
@@ -187,7 +189,7 @@ const MyAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 23}}
                                     />
-                                    <Label> MEU PLANO: </Label> {advertiser.plan}
+                                    <Label> MEU PLANO: </Label> {advertiser?.plan}
                                 </Title>
                             </AdvertiserView>
 
@@ -197,7 +199,7 @@ const MyAdvertiserProfile: React.FC = () => {
                     {/* LOGO DO PERFIL */}
                     <View style={{width: window.width * 0.4, padding: 15}}>
                         <View style={{width: 130}}>
-                            <Image source={logoCircle}
+                            <Image source={profile.profile_img_url ? {uri: profile.profile_img_url} : logoCircle }
                                    style={{
                                        width: 100,
                                        height: 100,

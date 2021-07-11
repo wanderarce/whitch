@@ -178,13 +178,10 @@ const CreateAdvertiser: React.FC = () => {
             <KeyboardAwareScrollView
                 style={{flex: 1}}
             >
-
-
                 <Container>
-
-                    <Icon name="chevron-left" size={30}
-                          color={mainColor}
-                          onPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate('SignIn')}/>
+                  <Icon name="chevron-left" size={30}
+                    color={mainColor}
+                    onPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate('SignIn')}/>
 
                     <View>
                         <Title>SEJA UM ANUNCIANTE</Title>
@@ -194,7 +191,6 @@ const CreateAdvertiser: React.FC = () => {
                         ref={formRef}
                         onSubmit={create}
                     >
-
                         <Input
                             ref={companyNameRef}
                             autoCapitalize="words"
