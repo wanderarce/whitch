@@ -21,19 +21,16 @@ export const getUser = async () => {
 }
 
 export const headerAuthorizationOrAlert = async () => {
-
     const user = await getUser();
-    const accessToken = user.access_token ?? null;
-
-    if (accessToken === null) {
+    const accessToken =  user.access_token ?? null;
+    if (accessToken === null || accessToken == undefined) {
         Alert.alert('Usuário não identificado!', 'Desculpe, É necessário realizar o login!');
         return null;
-    }
-
-    return {
+    }else{
+      return {
         headers: {Authorization: `Bearer ${accessToken}`}
-    };
-
+      };
+    }
 }
 
 export const mainColor = '#2772ca'; // 195390

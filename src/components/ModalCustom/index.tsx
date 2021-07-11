@@ -9,6 +9,7 @@ class ModalCustom extends Component {
     children: t.node,
     modalVisible: t.bool.isRequired,
     value: t.string,
+    height: t.number
 
   };
   static defaultProps = {
@@ -28,7 +29,7 @@ class ModalCustom extends Component {
       <View style={styles.centeredView}>
         <Modal
 
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={props.modalVisible}
           onRequestClose={() => {
@@ -38,9 +39,11 @@ class ModalCustom extends Component {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>{props.value}</Text>
-              <View>
-                {props.children}
+              <Text style={styles.modalText}>
+                {props.value}
+                </Text>
+              <View  style={{position:'relative', bottom:15, right:0}}>
+                  {props.children}
               </View>
             </View>
           </View>
@@ -60,8 +63,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     backgroundColor: mainColor,
-    padding: 2,
-    height:60,
+    height: 70,
     width:200,
     alignItems: "center",
     shadowColor: "#000",
@@ -77,28 +79,19 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5
   },
-  button: {
-    position:"relative",
-  top:"0",
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
   textStyle: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center"
   },
   modalText: {
+    padding: 15,
     color: "white",
-    marginBottom: 15,
-    textAlign: "center"
+    marginBottom: 5,
+    textAlign: "center",
+    alignContent:"center",
+
+    //minHeight: 70
   }
 });
 

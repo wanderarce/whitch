@@ -420,7 +420,8 @@ const MainMenu: React.FC = () => {
                                 <View>
                                     <View style={{width: window.width * 0.88, height: 30, alignItems: "flex-end"}}>
                                         <MenuLabel
-                                            onPress={() => runLogout()}
+                                            onPress={() =>
+                                              runLogout()}
                                         >
                                             Sair
                                         </MenuLabel>

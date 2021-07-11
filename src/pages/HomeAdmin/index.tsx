@@ -54,7 +54,7 @@ const HomeAdmin: React.FC = () => {
                     <Icon name="align-justify"
                           size={30}
                           color={mainColor}
-                          onPress={() => navigation.navigate('MainMenu')}
+                          onPress={() => navigation.openDrawer()}
                     />
                 </View>
 
@@ -70,7 +70,7 @@ const HomeAdmin: React.FC = () => {
                                 textTransform: 'uppercase',
                                 fontWeight: 'bold'
                             }}
-                        >{profile.name}</Text>
+                        >{profile?.name}</Text>
                     </View>
 
                     <Container style={{

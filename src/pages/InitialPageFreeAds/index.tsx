@@ -1,4 +1,4 @@
-import {Alert, FlatList, Image, Linking, Share, TextInput, View} from 'react-native';
+import {Alert, FlatList, Image, Linking, Share, TextInput, View, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import {Container} from "./styles";
@@ -222,6 +222,7 @@ const InitialPageFreeAds: React.FC = () => {
 
     const toggleAdsComment = async (id) => {
         const items = await showComments;
+        setOffset(4);
         return items.includes(id)
             ? hiddenCommentIds(id)
             : showCommentIds(id);
@@ -316,7 +317,6 @@ const InitialPageFreeAds: React.FC = () => {
             padding: 5,
         }}
         key={index}>
-
             <View style={{
                 width: window.width * 0.1,
             }}>
@@ -370,7 +370,7 @@ const InitialPageFreeAds: React.FC = () => {
                     <Icon name="align-justify"
                           size={30}
                           color={mainColor}
-                          onPress={() => navigation.navigate('MainMenu')}
+                          onPress={() => navigation.openDrawer()}
                     />
                 </View>
 
@@ -411,7 +411,6 @@ const InitialPageFreeAds: React.FC = () => {
 
                     <FlatList data={freeAds} keyExtractor={((item, index) => item.id.toString())}
                               renderItem={({item}) => {
-
                                   return (
                                       <>
                                           <View style={{
@@ -705,11 +704,15 @@ const InitialPageFreeAds: React.FC = () => {
                                                   {item.comments !== undefined
                                                    && renderComment(item.comments)
                                                   }
-                                                   <View style={{display: (showMore == true) ? 'flex' : 'none'}}  onTouchEnd={()=>{
-                                                 setOffset(ofsset+4);
-                                                 renderComment(item.comments);
-                                                }}
-                                                ><Text >Carregar mais</Text></View>
+                                                  <View style={{display: (showMore == true) ? 'flex' : 'none'}}  onTouchEnd={()=>{
+                                                    setOffset(ofsset+4);
+                                                    renderComment(item.comments);
+                                                  }}
+                                                  >
+                                                    <Text style={{color: "blue", paddingTop: 7, alignContent: "space-around", textAlign: "right"}}>
+                                                        Carregar mais
+                                                    </Text>
+                                                  </View>
 
                                               </View>
 

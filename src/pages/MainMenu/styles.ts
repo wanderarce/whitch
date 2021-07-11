@@ -19,13 +19,12 @@ export const Label = styled.Text`
 `;
 
 export const Menu = styled.View`
-    paddingTop: 15px;
+    padding: 15px;
 `;
 
 export const MenuLabel = styled.Text`
   font-size: 12px;
-  padding: 06px 0px 0px
-  color: #333333;
+  color: #000;
   &:hover {
     color: pink')};
   }

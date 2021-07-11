@@ -149,7 +149,7 @@ const MyProfile: React.FC = () => {
                     <Icon name="chevron-left"
                           size={30}
                           color={mainColor}
-                          onPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate('MainMenu')}
+                          onPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.openDrawer()}
                     />
                 </View>
                 <View>

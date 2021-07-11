@@ -151,7 +151,6 @@ const Login: React.FC = () => {
                     Alert.alert('Ocorreu um erro', 'Informe um e-mail ou telefone válido!');
                     return;
                 } else {
-
                     formRef.current?.setErrors({});
                     const schema = Yup.object().shape({
                         password: Yup.string().min(3, 'A senha deve ser informada corretamente.'),
@@ -177,7 +176,7 @@ const Login: React.FC = () => {
                     .then(async (response) => {
                         await AsyncStorage.setItem('authUser', JSON.stringify(response.data.data));
                         await resetMainProfile();
-                        setLoading(false);
+                        await setLoading(false);
                         navigation.navigate('InitialPageGroup')
                     })
                     .catch((error) => {
@@ -204,6 +203,7 @@ const Login: React.FC = () => {
                 Alert.alert(
                     'Ocorreu um erro', 'Ocorreu um erro ao tentar realizar o login, tente novamente.');
             }
+            setLoading(false);
         },
         [navigation],
     );
@@ -213,12 +213,12 @@ const Login: React.FC = () => {
             <KeyboardAwareScrollView style={{flex: 1, backgroundColor: '#FFF'}}>
 
 
-                <Container visible={loading}>
+                <Container >
                     <Icon name="chevron-left" size={30} color={mainColor}
                           onPress={() => navigation.navigate('SignIn')}/>
 
                     <Loading visible={loading}  dismiss={!loading}/>
-                    <ContainerLogin style={{height: loading? "0%": "100%"}}>
+                    <ContainerLogin style={{height: loading==true ? "0%": "100%"}}>
 
                           <View >
                             <Title>FAÇA SEU LOGIN</Title>

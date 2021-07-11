@@ -12,6 +12,7 @@ import {loadUserProfile, mainColor, myProfile} from "../../utils/Util";
 import logoImg from "../../assets/logo-dark-fonte.png";
 import logoCircle from "../../assets/logo-circle.png";
 import AsyncStorage from "@react-native-community/async-storage";
+import SignIn from "../SignIn";
 
 const window = Dimensions.get('window');
 
@@ -32,7 +33,7 @@ const Profile: React.FC = () => {
         const id = await AsyncStorage.getItem('showUserProfile');
 
         if(id === null){
-            return navigation.goBack();
+            return navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Login");
         }
 
         const profile = await loadUserProfile(id);
@@ -105,9 +106,7 @@ const Profile: React.FC = () => {
 
 
     useEffect(function () {
-
         loadProfile();
-
     }, [])
 
 
@@ -134,7 +133,7 @@ const Profile: React.FC = () => {
                     <Icon name="align-justify"
                           size={30}
                           color={mainColor}
-                          onPress={() => navigation.navigate('MainMenu')}
+                          onPress={() => navigation.openDrawer()}
                     />
                 </View>
 

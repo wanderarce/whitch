@@ -124,7 +124,7 @@ const ShowAdvertiserProfile: React.FC = () => {
                             fontSize: 18,
                         }}
                         >
-                            {advertiser.trading_name}
+                            {advertiser!= null ? advertiser.trading_name : ""}
                         </Title>
                         <View style={{
                             backgroundColor: mainColor,
@@ -141,7 +141,7 @@ const ShowAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 23}}
                                     />
-                                    <Label> TELEFONE: </Label>{advertiser.phone}
+                                    <Label> TELEFONE: </Label>{advertiser!= null ? advertiser.phone : ""}
                                 </Title>
                             </AdvertiserView>
 
@@ -153,7 +153,7 @@ const ShowAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 23}}
                                     />
-                                    <Label> ENDEREÇO: </Label> {advertiser.address}
+                                    <Label> ENDEREÇO: </Label> {advertiser!= null ? advertiser.address : ""}
                                 </Title>
                             </AdvertiserView>
 
@@ -165,7 +165,7 @@ const ShowAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 23}}
                                     />
-                                    <Label> E-MAIL: </Label>{advertiser.email}
+                                    <Label> E-MAIL: </Label>{advertiser!= null && advertiser.email != null ? advertiser.email: ""}
                                 </Title>
                             </AdvertiserView>
 
@@ -177,7 +177,7 @@ const ShowAdvertiserProfile: React.FC = () => {
                                           color="#FFF"
                                           style={{lineHeight: 23}}
                                     />
-                                    <Label> SEGMENTO: </Label> {advertiser.segment}
+                                    <Label> SEGMENTO: </Label> {advertiser!= null ? advertiser.segment : ""}
                                 </Title>
                             </AdvertiserView>
 

@@ -129,7 +129,7 @@ const ListPointAds: React.FC = () => {
                     <Icon name="align-justify"
                           size={30}
                           color={mainColor}
-                          onPress={() => navigation.navigate('MainMenu')}
+                          onPress={() => navigation.openDrawer()}
                     />
                 </View>
 

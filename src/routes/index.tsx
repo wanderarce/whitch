@@ -5,7 +5,7 @@ import AuthRoutes from './auth.routes';
 import AppRoutes from './app.routes';
 
 import { useAuth } from '../hooks/auth';
-
+import DrawerCustom from '../components/DrawerCustom/index';
 const Routes: React.FC = () => {
   const { user, loading } = useAuth();
 
@@ -15,9 +15,10 @@ const Routes: React.FC = () => {
         <ActivityIndicator size="large" color="#999"/>
       </View>
     );
+  }else{
+    return user ? <AppRoutes /> : <AuthRoutes />;
   }
 
-  return user ? <AppRoutes /> : <AuthRoutes />
 };
 
 export default Routes;

@@ -97,7 +97,7 @@ const MyAdvertiserProfile: React.FC = () => {
                             fontSize: 18,
                         }}
                         >
-                            {advertiser.trading_name}
+                            {advertiser!= null ? advertiser.trading_name : ""}
                         </Title>
                         <View style={{
                             backgroundColor: mainColor,

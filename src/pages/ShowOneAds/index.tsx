@@ -229,7 +229,7 @@ const ShowOneAds: React.FC = () => {
 
     const sharedAds = (item) => {
         Share.share({
-            message: `Veja o anúncio de ${item.advertiserInfo.trading_name}: ${item.title} - no app Which Is`,
+            message: `Veja o anúncio de ${item.advertiserInfo.trading_name}: ${item?.title} - no app Which Is`,
         });
     }
 
@@ -278,7 +278,7 @@ const ShowOneAds: React.FC = () => {
                     <Icon name="align-justify"
                           size={30}
                           color={mainColor}
-                          onPress={() => navigation.navigate('MainMenu')}
+                          onPress={() => navigation.openDrawer()}
                     />
                 </View>
 
@@ -291,7 +291,7 @@ const ShowOneAds: React.FC = () => {
                     <Title>{titlePage}</Title>
 
 
-                    <FlatList data={ads} keyExtractor={((item, index) => item.id.toString())}
+                    <FlatList data={ads} keyExtractor={((item, index) => item?.id.toString())}
                               renderItem={({item}) => {
 
                                   return (
@@ -312,7 +312,7 @@ const ShowOneAds: React.FC = () => {
 
                                                       <Label style={{
                                                           padding: 10, paddingHorizontal: 10, textTransform: "uppercase"
-                                                      }}>{item.advertiserInfo.trading_name}</Label>
+                                                      }}>{item?.advertiserInfo.trading_name}</Label>
 
                                                   </View>
 
@@ -332,7 +332,7 @@ const ShowOneAds: React.FC = () => {
 
                                               <View
                                                   style={{alignItems: "center", paddingTop: 10}}>
-                                                  <Image source={{uri: item.img}}
+                                                  <Image source={{uri: item?.img}}
                                                          style={{
                                                              position: "absolute",
                                                              width: "100%",
@@ -355,11 +355,12 @@ const ShowOneAds: React.FC = () => {
                                                               height: 40,
                                                           }}
                                                                 onTouchStart={() => {
-                                                                    toggleAdsComment(item.id);
+                                                                  if(item !== null)
+                                                                    toggleAdsComment(item?.id);
                                                                 }}
                                                           >
                                                               <Image
-                                                                  source={adsShowComments.includes(item.id) ? commentHoverImg : commentImg}
+                                                                  source={adsShowComments.includes(item?.id) ? commentHoverImg : commentImg}
                                                                   style={{
                                                                       width: "100%",
                                                                       height: "100%",
@@ -374,16 +375,16 @@ const ShowOneAds: React.FC = () => {
                                                                   marginLeft: 15,
                                                                       width: window.width * 0.09,
                                                                       textAlign: "center",
-                                                                      display: item.comments?.length ?? 0 > 0 ? "flex" : "none",
+                                                                      display: item?.comments?.length ?? 0 > 0 ? "flex" : "none",
                                                                   }}
                                                               >
-                                                                  {item.comments?.length ?? 0}
+                                                                  {item?.comments?.length ?? 0}
                                                               </Label>
                                                           </View>
 
                                                           <Tooltip
                                                               backgroundColor={mainColor}
-                                                              popover={<TextTip>{item.voucher}</TextTip>}>
+                                                              popover={<TextTip>{item?.voucher}</TextTip>}>
 
                                                               <View style={{
                                                                    width: window.width * 0.14,
@@ -434,7 +435,7 @@ const ShowOneAds: React.FC = () => {
 
                                                           <Tooltip
                                                               backgroundColor={mainColor}
-                                                              popover={<TextTip>{item.point_coins}</TextTip>}>
+                                                              popover={<TextTip>{item?.point_coins}</TextTip>}>
 
                                                               <View style={{
                                                                    width: window.width * 0.14,
@@ -460,7 +461,7 @@ const ShowOneAds: React.FC = () => {
                                                                 }}
                                                           >
                                                               <Image
-                                                                  source={isLikedAds(item.id) ? likedImg : likeImg}
+                                                                  source={isLikedAds(item?.id) ? likedImg : likeImg}
                                                                   style={{
                                                                       width: "100%",
                                                                       height: "100%",
@@ -468,7 +469,7 @@ const ShowOneAds: React.FC = () => {
                                                                   }}/>
                                                               <Label
                                                                   style={{
-                                                                      display: item.qty_like > 0 ? 'flex' : 'none',
+                                                                      display: item?.qty_like > 0 ? 'flex' : 'none',
                                                                       backgroundColor: mainColor,
                                                                       position: "relative",
                                                                        marginTop: -53,
@@ -480,7 +481,7 @@ const ShowOneAds: React.FC = () => {
                                                                       showAdLikes(item)
                                                                   }}
                                                               >
-                                                                  {item.qty_like}
+                                                                  {item?.qty_like}
                                                               </Label>
                                                           </View>
 
@@ -491,13 +492,13 @@ const ShowOneAds: React.FC = () => {
                                               <Hr style={{marginTop: 10, borderColor: 'white'}}></Hr>
                                               <View style={{padding: 10}}>
                                                   <Label style={{fontWeight: 'bold'}}>{item.title}</Label>
-                                                  <Label>{item.description}</Label>
+                                                  <Label>{item?.description}</Label>
                                               </View>
                                           </View>
 
 
                                           <View style={{
-                                              display: adsShowComments.includes(item.id) ? "flex" : "none",
+                                              display: adsShowComments.includes(item?.id) ? "flex" : "none",
                                               backgroundColor: "#e5e5e5",
                                               marginTop: -10,
                                               padding: 10,
@@ -522,9 +523,9 @@ const ShowOneAds: React.FC = () => {
                                                           commentRef.current?.focus();
                                                       }}
                                                       onChangeText={(value) => {
-                                                          storeComments(item.id, value)
+                                                          storeComments(item?.id, value)
                                                       }}
-                                                      value={item.currentComment}
+                                                      value={item?.currentComment}
                                                       keyboardAppearance="dark"
                                                       placeholderTextColor="#666360"
                                                   />
@@ -537,7 +538,7 @@ const ShowOneAds: React.FC = () => {
                                                           alignItems: "center",
                                                       }}
                                                       onTouchStart={() => {
-                                                          sendComment(item.id)
+                                                          sendComment(item?.id)
                                                       }}
                                                   >
                                                       <Icon
@@ -550,7 +551,7 @@ const ShowOneAds: React.FC = () => {
                                               </View>
 
 
-                                              {item.comments !== undefined && item.comments.map((itemComment) => (
+                                              {item != null && item.comments !== undefined && item.comments.map((itemComment) => (
                                                   <View style={{
                                                       flexDirection: 'row',
                                                       borderRadius: 3,

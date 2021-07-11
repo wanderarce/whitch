@@ -95,7 +95,7 @@ const ListFreeAds: React.FC = () => {
             ? [...profile.liked_free_ads, item.id]
             : profile.liked_free_ads.filter((likedAds) => likedAds !== item.id);
 
-        const newAds = freeAds.map((adsItem) => {
+        const newAds = freeAds.map((adsItem, index) => {
 
             if (adsItem.id !== item.id) {
                 return adsItem;
@@ -143,7 +143,7 @@ const ListFreeAds: React.FC = () => {
 
         const comments = await loadFreeAdsCommentsById(id);
 
-        const newAds = freeAds.map((item) => {
+        const newAds = await freeAds.map((item, index) => {
 
             item.comments = item.id === id
                 ? comments
@@ -224,8 +224,15 @@ const ListFreeAds: React.FC = () => {
     }
 
     const toggleAdsComment = async (id) => {
+
         const items = await showComments;
-        return items.includes(id)
+        if(items.length > 4){
+          setOffset(3);
+        }else{
+          setOffset(items.length);
+        }
+
+          return items.includes(id)
             ? hiddenCommentIds(id)
             : showCommentIds(id);
     };
@@ -294,7 +301,7 @@ const ListFreeAds: React.FC = () => {
         return ads;
     }
 
-    renderComment = (comments) => {
+    const renderComment = (comments) => {
 
       if(comments.length >= ofsset){
         setShowMore(true);
@@ -330,7 +337,7 @@ const ListFreeAds: React.FC = () => {
             }}>
                 <Label
                     style={{color: "black", textAlign: "justify"}}>
-                    {itemComment.comment}
+                    {itemComment.comment} aaaaaaa
                 </Label>
             </View>
         </View>
@@ -365,7 +372,7 @@ const ListFreeAds: React.FC = () => {
                     <Icon name="align-justify"
                           size={30}
                           color={mainColor}
-                          onPress={() => navigation.navigate('MainMenu')}
+                          onPress={() => navigation.openDrawer()}
                     />
                 </View>
 
@@ -721,14 +728,19 @@ const ListFreeAds: React.FC = () => {
                                                   </View>
 
 
-                                                  {item.comments !== undefined
+                                                  {item !=null && item.comments !== undefined
                                                   && renderComment(item.comments)}
+
                                                   <View style={{display: (showMore == true) ? 'flex' : 'none'}}  onTouchEnd={()=>{
-                                                  setOffset(ofsset+4);
-                                                   renderComment(item.comments);
-                                                  }}>
-                                                    <Text >Carregar mais</Text>
+                                                    setOffset(ofsset+4);
+                                                    renderComment(item.comments);
+                                                  }}
+                                                  >
+                                                    <Text style={{color: "blue", paddingTop: 7, alignContent: "space-around", textAlign: "right"}}>
+                                                        Carregar mais
+                                                    </Text>
                                                   </View>
+
                                               </View>
 
                                           </View>

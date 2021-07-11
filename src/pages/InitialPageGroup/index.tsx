@@ -1,9 +1,10 @@
-import {Modal, Alert, Dimensions, FlatList, Image, Linking, Share, TextInput, View, Text, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { Alert, Dimensions, FlatList, Image, Linking, Share, TextInput,
+   View, Text, StyleSheet} from 'react-native';
+import {DrawerActions, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import {Container} from "./styles";
 import logoImg from "../../assets/logo-dark-fonte.png";
-import { NavigationContainer, DrawerActions } from '@react-navigation/native';
+
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 import React, {useEffect, useRef, useState} from "react";
@@ -49,7 +50,6 @@ const window = Dimensions.get('window');
 const InitialPageGroup: React.FC = () => {
 
 
-
     const navigation = useNavigation();
     const commentRef = useRef<TextInput>(null);
     const searchRef = useRef<TextInput>(null);
@@ -71,21 +71,15 @@ const InitialPageGroup: React.FC = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [subList, setSublist] = useState([]);
     const [showMore, setShowMore] = useState(true);
-    const renderViewMore = (comments) => {
-        let next  = comments.length - size;
-        return (<View onTouchEnd={()=>{ setOffset((next < 4) ? ofsset + next : ofsset + 4 );
-        renderComment(comments);}}>
-          <Text>Carregar mais</Text>
-        </View>);
 
-    }
-    const renderComment = (comments) => {
+
+    const renderComment = (comments:[]) => {
 
       if(comments.length >= ofsset){
-       setShowMore(true);
-      }else{
-        setShowMore(false);
-      }
+        setShowMore(true);
+       }else{
+         setShowMore(false);
+       }
       return comments.slice(0,ofsset).map((itemComment, index) => (
           <View style={{
             flexDirection: 'row',
@@ -176,6 +170,7 @@ const InitialPageGroup: React.FC = () => {
     };
 
     const toggleAdsComment = async (id) => {
+      setOffset(4);
         const items = await adsShowComments;
         return items.includes(id)
             ? hiddenAdsComment(id)
@@ -297,7 +292,7 @@ const InitialPageGroup: React.FC = () => {
 
     const loadAds = async () => {
 
-      setLoading(true);
+
 
         const profile = await myProfile();
 
@@ -314,14 +309,11 @@ const InitialPageGroup: React.FC = () => {
         if (adsByGroup.length < 1) {
             navigation.navigate('InitialPageFreeAds');
         }
-
         setAds(adsByGroup);
-        setLoading(false);
-
     };
 
     const loadProfile = async () => {
-        const loadedProfile = await loadMainProfile(true);
+        const loadedProfile = await loadMainProfile(false);
         setProfile(loadedProfile);
     }
 
@@ -338,7 +330,7 @@ const InitialPageGroup: React.FC = () => {
 
 
     const makeSearch = async () => {
-        //setLoading(true);
+
         const term = termSearch;
 
         if (term.length < 3) {
@@ -351,6 +343,7 @@ const InitialPageGroup: React.FC = () => {
 
         if (!profile) {
             navigation.navigate('Login');
+
             return;
         }
 
@@ -361,21 +354,24 @@ const InitialPageGroup: React.FC = () => {
             : [];
 
         setAds(adsByGroup);
-        //setLoading(false);
+
     };
 
     useEffect(function () {
-
+      setLoading(true);
       setAdsShowComment([]);
         loadAds();
         loadProfile();
+        setLoading(false);
 
     }, []);
 
-
-    return (
+    if(loading == true) {
+      return <Loading visible={loading}  dismiss={!loading}/>;
+    } else {
+      return (
         <>
-            <Loading visible={loading}  dismiss={!loading}/>
+
             <View style={{
                 flexDirection: 'row',
                 backgroundColor: "white"
@@ -395,8 +391,7 @@ const InitialPageGroup: React.FC = () => {
                     <Icon name="align-justify"
                           size={30}
                           color={mainColor}
-                          onPress={() => navigation.navigate('MainMenu')
-                        }
+                          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
                     />
                 </View>
 
@@ -537,22 +532,14 @@ const InitialPageGroup: React.FC = () => {
                                                               }}
                                                               onTouchEnd={()=>{
                                                                 setVisible(true);
-                                                                setVoucher(`Apresente o voucher ${item.voucher}
-                                                                e garanta essa promoção.`);
+                                                                let msg = "Apresente o voucher "+ item.voucher +" garanta essa promoção.";
+                                                                setVoucher(msg);
                                                               }}>
                                                                 <View onTouchStart={()=>{setVisible(false);}}>
                                                                       <ModalCustom
                                                                         modalVisible={isVisible}
                                                                         value={voucher}
-                                                                        children={<Button style={{position:'relative',
-                                                                        bottom: 65,
-                                                                        left:95,
-                                                                        backgroundColor:"#000",
-                                                                        height:25,
-                                                                        width:25,
-                                                                        borderRadius:20}}
-                                                                        >X</Button>
-                            }
+
                                                                         >
                                                                       </ModalCustom>
 
@@ -742,11 +729,16 @@ const InitialPageGroup: React.FC = () => {
                                                && item.comments !== null
                                                && renderComment(item.comments)
                                               }
-                                               <View style={{display: (showMore == true) ? 'flex' : 'none'}}  onTouchEnd={()=>{
+                                              <View style={{display: (showMore == true) ? 'flex' : 'none'}}
+                                               onTouchEnd={()=>{
                                                  setOffset(ofsset+4);
                                                  renderComment(item.comments);
-                                                }}
-                                                ><Text >Carregar mais</Text></View>
+                                               }}
+                                              >
+                                                <Text style={{color: "blue", paddingTop: 7, alignContent: "space-around", textAlign: "right"}}>
+                                                    Carregar mais
+                                                </Text>
+                                              </View>
 
                                           </View>
                                           <Footer />
@@ -847,6 +839,7 @@ const InitialPageGroup: React.FC = () => {
 
         </>
     );
+  }
 }
 
 export default InitialPageGroup;

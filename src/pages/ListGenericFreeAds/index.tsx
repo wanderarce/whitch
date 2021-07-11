@@ -76,7 +76,7 @@ const ListGenericFreeAds: React.FC = () => {
                     <Icon name="align-justify"
                           size={30}
                           color={mainColor}
-                          onPress={() => navigation.goBack()}
+                          onPress={() => navigation.openDrawer()}
                     />
                 </View>
 
