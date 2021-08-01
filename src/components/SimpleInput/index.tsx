@@ -59,7 +59,7 @@ const SimpleInput: React.RefForwardingComponent<InputRef, InputProps> = ({
         }
     }))
 
-    if(!isFilled && rest.defaultValue !== ''){
+    if(!isFilled && rest.defaultValue !== undefined && rest.defaultValue !== null && rest.defaultValue !== ''){
         inputValueRef.current.value = rest.defaultValue;
     }
 
@@ -96,7 +96,7 @@ const SimpleInput: React.RefForwardingComponent<InputRef, InputProps> = ({
                 defaultValue={defaultValue}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                onChangeText={(value) => {
+                onChangeText={(value: string) => {
                     inputValueRef.current.value = value;
                 }}
                 {...rest}

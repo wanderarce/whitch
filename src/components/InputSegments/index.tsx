@@ -6,6 +6,7 @@ import {useField} from "@unform/core";
 import {Container, ModalStyle} from "./style";
 import {mainColor} from "../../utils/Util";
 import api from "../../services/api";
+import { Alert } from "react-native";
 
 interface InputProps extends TextInputProps {
     name: string;
@@ -38,38 +39,53 @@ const SegmentsSelect: React.RefForwardingComponent<InputRef, InputProps> = ({nam
         });
     };
 
-    useEffect(function (){
-        if(rest.required === true){
+    const loadSegment = async (id: any) => {
 
-            const oldLabel = startDefaultSegmentLabel;
+      id = parseInt(id);
+      if (isNaN(id)) {
+          inputValueRef.current.value = '';
+          inputElementRef.current.clear();
+          return null;
+      }
 
-            setDefaultSegmentSelectLabel(startDefaultSegmentLabel + '*');
-
-            if(currentSegmentTypeLabel === oldLabel){
-                setCurrentSegmentLabel(startDefaultSegmentLabel + '*');
-            }
+      inputValueRef.current.value = id;
+      segments.forEach(element => {
+        if(element.id == id){
+          setCurrentSegmentLabel(element.name);
         }
-    }, [])
+      });
+  }
 
-    useEffect(function () {
+  useEffect(function () {
 
-        registerField<string>({
-            name: fieldName,
-            ref: inputValueRef.current,
-            path: 'value',
-            setValue(ref: any, value) {
-                inputValueRef.current.value = value;
-                inputElementRef.current.setNativeProps({text: value});
-            },
-            clearValue() {
-                inputValueRef.current.value = '';
-                inputElementRef.current.clear();
-            },
-        });
+    registerField<string>({
+        name: fieldName,
+        ref: inputValueRef.current,
+        path: 'value',
+        setValue(ref: any, value) {
+            inputValueRef.current.value = value;
+            inputElementRef.current.setNativeProps({text: value});
+        },
+        clearValue() {
+            inputValueRef.current.value = '';
+            inputElementRef.current.clear();
+        },
+    });
 
-        loadSegments();
-
+    loadSegments();
+    loadSegment(rest.value);
+    if(rest.required == true){
+        const oldLabel = startDefaultSegmentLabel;
+        setDefaultSegmentSelectLabel(startDefaultSegmentLabel + '*');
+        if(currentSegmentTypeLabel === oldLabel){
+            setCurrentSegmentLabel(startDefaultSegmentLabel + '*');
+        }
+      }
     }, [fieldName, registerField])
+
+    useEffect(() => {
+      loadSegment(rest.value);
+    }, [rest.value]);
 
     return (
         <>
@@ -82,9 +98,10 @@ const SegmentsSelect: React.RefForwardingComponent<InputRef, InputProps> = ({nam
                     labelExtractor={item => item.name}
                     keyExtractor={item => item.id}
                     style={ModalStyle.style}
+
                     onChange={(option) => {
-                        setCurrentSegmentLabel(option.name);
-                        inputValueRef.current.value = option.id;
+                      setCurrentSegmentLabel(option.name);
+                      inputValueRef.current.value = option.id;
                     }}
                 >
                     <TextInput

@@ -258,6 +258,26 @@ const MyAdvertiserProfile: React.FC = () => {
                             </View>
                         </View>
                     </Menu>
+
+
+                    <Menu>
+                        <View style={{
+                            flexDirection: 'row',
+                            backgroundColor: "white"
+                        }}>
+                            <View style={{width: window.width * 0.15, height: 30}}>
+                                <Image source={editProfileImg}
+                                       style={{width: "100%", height: "110%", resizeMode: "contain"}}/>
+                            </View>
+                            <View>
+                                <View style={{width: window.width * 0.85, height: 30}}>
+                                    <MenuLabel
+                                        onPress={() => navigation.navigate('EditAdvertiser')}
+                                    >EDITAR MINHA CONTA</MenuLabel>
+                                </View>
+                            </View>
+                        </View>
+                    </Menu>
                 </KeyboardAwareScrollView>
 
             </Container>

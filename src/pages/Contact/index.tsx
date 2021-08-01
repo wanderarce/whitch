@@ -70,7 +70,7 @@ const Contact: React.FC = () => {
 
                         message = getMessageByAxiosError(error, message);
 
-                        console.log(message);
+                        //console.log(message);
 
                         Alert.alert(
                             'Ocorreu um erro!',
@@ -84,7 +84,7 @@ const Contact: React.FC = () => {
                     return;
                 }
 
-                console.log(error)
+                //console.log(error)
                 Alert.alert('Erro no cadastro', 'Ocorreu um erro ao enviar o e-mail, tente novamente.');
             }
         },

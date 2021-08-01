@@ -1,4 +1,4 @@
-import {Alert, FlatList, Image, Linking, Share, TextInput, View, Text} from 'react-native';
+import {Alert, FlatList, Image, Linking, Share, TextInput, View, Text, VirtualizedList} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import {Container, Title} from "./styles";
@@ -48,6 +48,7 @@ const ListFreeAds: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [showMore, setShowMore] = useState(true);
     const [ofsset, setOffset] = useState(4);
+    const [limit, setLimit] = useState(2);
 
     const orders = [
         {name: 'N/A', value: undefined},
@@ -116,11 +117,13 @@ const ListFreeAds: React.FC = () => {
         setProfile(loadedProfile);
     }
 
-    const loadFreeAds = async () => {
+    const loadFreeAds = async (limit) => {
         setLoading(true);
-        const freeAds = await getAllFreeAds();
-        const newAds = freeAds.map((ads) => loadInitialShowImage(ads));
-        setFreeAds(newAds);
+        if(limit != null && limit != undefined) {
+          const freeAds = await getAllFreeAds();
+          const newAds = freeAds.map((ads) => loadInitialShowImage(ads));
+          setFreeAds(newAds);
+        }
         setLoading(false);
     };
 
@@ -219,7 +222,6 @@ const ListFreeAds: React.FC = () => {
 
     const hiddenCommentIds = (id) => {
         const currentShow = showComments.filter((item) => id != item);
-        console.log(currentShow);
         setShowComments(currentShow);
     }
 
@@ -255,8 +257,6 @@ const ListFreeAds: React.FC = () => {
 
 
     const updateAdsList = (ads) => {
-
-        console.log(ads.id);
 
         const newAds = freeAds.map((item) => {
             if (item.id === ads.id) {
@@ -345,9 +345,34 @@ const ListFreeAds: React.FC = () => {
     }
 
     useEffect(function () {
-        loadFreeAds();
+        loadFreeAds(2);
         loadProfile();
     }, [])
+
+    const loadMoreResults = async (info) => {
+      if(limit < freeAds){
+        setLimit(limit + 2);
+      }
+    }
+
+    const getItem = (data, index) => ({
+      id: data[index].id,
+      user: data[index].user,
+      user_id: data[index].user_id,
+      currentImage: data[index].currentImage,
+      comments: data[index].comments,
+      userInfo: data[index].userInfo,
+      title: `${data[index].title}`,
+      qty_like: data[index].qty_like,
+      amountBRL: data[index].amountBRL,
+      description: data[index].description,
+      currentComment: data[index].currentComment,
+    });
+
+    const getItemCount =  () => {
+      return (freeAds != null && freeAds != undefined) ? freeAds.length : 0;
+    }
+
 
     return (
         <>
@@ -373,6 +398,7 @@ const ListFreeAds: React.FC = () => {
                           size={30}
                           color={mainColor}
                           onPress={() => navigation.openDrawer()}
+
                     />
                 </View>
 
@@ -434,8 +460,13 @@ const ListFreeAds: React.FC = () => {
 
             <KeyboardAwareScrollView style={{flex: 1, backgroundColor: "#FFF"}}>
                 <Container>
-                    <FlatList data={freeAds} keyExtractor={((item, index) => item.id.toString())}
-                              renderItem={({item}) => {
+                  <VirtualizedList
+                  data={freeAds}
+                  initialNumToRender={2}
+                  keyExtractor={((item, index) => item.id.toString())}
+                  getItemCount={getItemCount}
+                  getItem={getItem}
+                  renderItem={({item}) => {
 
                                   return (
                                       <>
@@ -487,7 +518,7 @@ const ListFreeAds: React.FC = () => {
 
                                               <View
                                                   style={{alignItems: "center", paddingTop: 10}}>
-                                                  <Image source={{uri: item.currentImage}}
+                                                  <Image source={{uri: item?.currentImage}}
                                                          style={{
                                                              width: "100%",
                                                              height: 150,
@@ -552,7 +583,8 @@ const ListFreeAds: React.FC = () => {
                                                             }}
                                                       >
                                                           <Image
-                                                              source={showComments.includes(item.id) ? commentHoverImg : commentImg}
+                                                              source={showComments.includes(item?.id)
+                                                                ? commentHoverImg : commentImg}
                                                               style={{
                                                                   width: "100%",
                                                                   height: "100%",
@@ -563,7 +595,7 @@ const ListFreeAds: React.FC = () => {
                                                               style={{
                                                                   backgroundColor: mainColor,
                                                                   position: "relative",
-                                                                   marginTop: -53,
+                                                                  marginTop: -53,
                                                                   marginLeft: 15,
                                                                   width: window.width * 0.09,
                                                                   textAlign: "center",

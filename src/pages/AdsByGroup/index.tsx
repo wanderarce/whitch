@@ -70,7 +70,7 @@ const AdsByGroup: React.FC = () => {
 
     const addCommentLock = (id) => {
         setCommentsLocked([...commentsLocked, id])
-        console.log(commentsLocked);
+        //console.log(commentsLocked);
     }
 
     const removeCommentLock = async (id) => {
@@ -267,7 +267,7 @@ const AdsByGroup: React.FC = () => {
     useEffect(function () {
         loadAds();
         loadProfile();
-        console.log(ads);
+        //console.log(ads);
     }, []);
 
 

@@ -14,16 +14,18 @@ import CityInput from "../../components/InputStates";
 import {LittleLabel} from "../SignUp";
 import {Hr} from "../../components/Hr/styles";
 import Footer from "../../components/Footer";
-import {getUser, loadMainProfile, mainColor} from "../../utils/Util";
+import {getAdvertiser, getUser, loadMainProfile, mainColor, headerAuthorizationOrAlert, myProfile} from "../../utils/Util";
 import SegmentsSelect from "../../components/InputSegments";
 import PlansSelect from "../../components/InputPlans";
 import Checkbox from "../../components/InputCheckbox";
 import * as Yup from "yup";
 import api from "../../services/api";
 import AsyncStorage from "@react-native-community/async-storage";
+import MaskedInput from 'react-text-mask';
 
-const CreateAdvertiser: React.FC = () => {
+const EditAdvertiser: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
+    const advertiserIdRef = useRef<TextInput>(null);
     const companyNameRef = useRef<TextInput>(null);
     const tradingNameRef = useRef<TextInput>(null);
     const registeredNumberRef = useRef<TextInput>(null);
@@ -36,20 +38,22 @@ const CreateAdvertiser: React.FC = () => {
     const navigation = useNavigation();
 
     const [loginIdentification, setLoginIdentification] = useState('');
+    const [advertiser, setAdvertiser] = useState({});
+    const [profile, setProfile] = useState({});
+    const [id, setId] = useState(null);
     const [cpfCnpj, setCpfCnpj] = useState("");
-    const [temp, setTemp] = useState("");
-    const getDDDFormatted = (value: any) => {
+    const [mask, setMask] = useState("");
 
+    const getDDDFormatted = (value: any) => {
         if (value.length < 3) {
             return '(' + value;
         }
-
         const ddd = value.substr(0, 2);
         const number = value.substr(2)
         return `(${ddd})${number}`;
     }
 
-    const getFormattedNumber = (value: any) => {
+    const getFormattedNumber = (value) => {
 
         if (value.length < 8) {
             return value;
@@ -74,7 +78,7 @@ const CreateAdvertiser: React.FC = () => {
 
     }
 
-    const cleanLoginIdentification = (value: any) => {
+    const cleanLoginIdentification = (value:any) => {
         if (value.includes('(') && value.includes(')')) {
             value = value.replace('-', '');
         }
@@ -93,14 +97,9 @@ const CreateAdvertiser: React.FC = () => {
         await AsyncStorage.setItem('signUpCellphone', value);
         return;
     }
-
     const cleanMask = (value: any) => {
-      if(value.includes('/') || value.includes('-') || value.includes('.') ){
-        return value.replace('/','').replace('-','').replace('.','').replace('.','');
-      }
-      return value;
+      return value.replace('/','').replace('-','').replace('.','').replace('.','');
     }
-
     const onChangeAddMaskCNPJ = async (inputValue:string) => {
 
       let v = cleanMask(inputValue);
@@ -116,83 +115,99 @@ const CreateAdvertiser: React.FC = () => {
       }
       return;
     }
+
+    const loadAdvertiser = async () => {
+        const profile = await myProfile();
+        const advertiser = await getAdvertiser(profile?.advertiser_id);
+        setProfile(profile);
+        setAdvertiser(advertiser);
+        onChangeAddMaskCellphone(advertiser.phone);
+        onChangeAddMaskCNPJ(advertiser.registered_number);
+        //planIdRef.current?.props.value = advertiser.plan_id;
+
+    };
+
+    useEffect(function () {
+        loadAdvertiser();
+    }, []);
+
     const create = useCallback(
         async (data) => {
             try {
-
                 const user = await getUser();
                 const accessToken = user.access_token ?? null;
 
                 if (accessToken === null) {
-                    Alert.alert('Usuário não identificado!', 'Desculpe, É necessário realizar o login!');
-                    return navigation.goBack();
+                  Alert.alert('Usuário não identificado!', 'Desculpe, É necessário realizar o login!');
+                  return navigation.goBack();
                 }
 
-                const config = {
-                    headers: {Authorization: `Bearer ${accessToken}`}
-                };
+              const getConfig = async () => {
+                  return await headerAuthorizationOrAlert();
+              };
 
-                const cellphoneFormatted = await AsyncStorage.getItem('signUpCellphone')
-                data.phone = cleanLoginIdentification(cellphoneFormatted);
-                const cnpjFormatted = await AsyncStorage.getItem('cnpj')
-                data.registered_number = cleanMask(cnpjFormatted);
+              const config = await getConfig();
 
-                formRef.current?.setErrors({});
+
+
+              const cellphoneFormatted = await AsyncStorage.getItem('signUpCellphone')
+              data.phone = cleanLoginIdentification(cellphoneFormatted);
+              const cnpjFormatted = await AsyncStorage.getItem('cnpj')
+              data.registered_number = cleanMask(cnpjFormatted);
+              formRef.current?.setErrors({});
                 const schema = Yup.object().shape({
-                    plan_id: Yup.string().required('Necessário escolher um plano.'),
-                    segment_id: Yup.string().required('Necessário escolher o segmento.'),
-                    phone: Yup.string().required('Informe um telefone')
+                  plan_id: Yup.string().required('Necessário escolher um plano.'),
+                  segment_id: Yup.string().required('Necessário escolher o segmento.'),
+                  phone: Yup.string().required('Informe um telefone')
                         .min(11, 'Informe corretamente o ddd e seu número de telefone.')
                         .max(11, 'Informe corretamente o ddd e seu número de telefone.'),
-                    city_id: Yup.string().required('Necessário informar um estado e uma cidade.'),
-                    registered_number: Yup.string().required('Informe um CNPJ válido.')
+                  city_id: Yup.string().required('Necessário informar um estado e uma cidade.'),
+                  registered_number: Yup.string().required('Informe um CNPJ válido.')
                         .min(14, 'Informe um CNPJ válido.')
                         .max(14, 'Informe um CNPJ válido.'),
-                    trading_name: Yup.string().required('Nome fantasia é obrigatório.')
+                  trading_name: Yup.string().required('Nome fantasia é obrigatório.')
                         .min(3, 'O nome fantasia deve possuir no mínimo 3 caracteres.'),
-                    company_name: Yup.string().required('Razão social é obrigatório.')
+                  company_name: Yup.string().required('Razão social é obrigatório.')
                         .min(3, 'A razão social deve possuir no mínimo 3 caracteres.'),
                 });
 
                 await schema.validate(data, {
                     abortEarly: true,
                 });
-
-                await api.post('/advertisers', data, config)
+                delete data.term;
+                delete data.conscious;
+                const perfil = await myProfile();
+                data.id = perfil.advertiser_id;
+                await api.put(`advertisers/${perfil.advertiser_id}/update`, data,
+                 config)
                     .then((response) => {
-                        Alert.alert('Cadastro realizado!', 'Seu cadastro como anúnciante foi realizado com sucesso');
-                        navigation.navigate('Login');
+                        Alert.alert('Cadastro atualizado!', 'Seu cadastro como anunciante foi realizado com sucesso');
+                        //navigation.navigate('Login');
                     })
                     .catch((error) => {
-
-                        let message = 'Não foi possível realizar o cadastro, por favor tente novamente.';
+                        let message = 'Não foi possível atualizar o cadastro, por favor tente novamente.';
 
                         if (422 === error.response.status) {
 
                             const errorData = error.response.data;
-
-                            console.log(errorData);
 
                             message = errorData.length !== 0
                                 ? errorData.errors[Object.keys(errorData.errors)[0]][0]
                                 : errorData.message;
 
                         }
-
                         Alert.alert(
                             'Ocorreu um erro!',
-                          message
+                            message
                         );
                     });
 
             } catch (error) {
-                if (error instanceof Yup.ValidationError) {
-                    Alert.alert('Ocorreu um erro', error.message);
-                    return;
-                }
-
-                console.log(error)
-                Alert.alert('Erro no cadastro', 'Ocorreu um erro ao fazer cadastro, tente novamente.');
+              if (error instanceof Yup.ValidationError) {
+                Alert.alert('Ocorreu um erro', error.message);
+                return;
+              }
+              Alert.alert('Erro no cadastro', 'Ocorreu um erro ao fazer cadastro, tente novamente.');
             }
         },
         [navigation],
@@ -216,8 +231,9 @@ const CreateAdvertiser: React.FC = () => {
                         ref={formRef}
                         onSubmit={create}
                     >
-                        <Input
+                      <Input
                             ref={companyNameRef}
+                            defaultValue={advertiser.company_name}
                             autoCapitalize="words"
                             name="company_name"
                             icon="tag"
@@ -230,6 +246,7 @@ const CreateAdvertiser: React.FC = () => {
 
                         <Input
                             ref={tradingNameRef}
+                            defaultValue={advertiser.trading_name}
                             autoCapitalize="words"
                             name="trading_name"
                             icon="tag"
@@ -242,23 +259,29 @@ const CreateAdvertiser: React.FC = () => {
 
 
                         <Input
-                            ref={registeredNumberRef}
-                            autoCorrect={false}
-                            keyboardType="number-pad"
-                            name="registered_number"
-                            icon="sidebar"
-                            placeholder="CNPJ"
-                            returnKeyType="next"
-                            onChangeText={onChangeAddMaskCNPJ}
-                            value={cpfCnpj}
-                            onSubmitEditing={() => {
-                                registeredNumberRef.current?.focus();
-                            }}
+
+                          ref={registeredNumberRef}
+                          value={advertiser?.registered_number}
+                          autoCorrect={false}
+                          keyboardType="number-pad"
+                          name="registered_number"
+                          icon="sidebar"
+                          placeholder="CNPJ"
+                          returnKeyType="next"
+                          value={cpfCnpj}
+                          onChangeText={onChangeAddMaskCNPJ}
+                          onSubmitEditing={() => {
+                            registeredNumberRef.current?.focus();
+                          }}
                         />
 
                         <CityInput
                             ref={cityIdRef}
+                            //defaultValue={advertiser?.city_id}
+                            value={advertiser?.city_id}
                             name="city_id"
+                            requiredCity={true}
+                            requiredState={true}
                             returnKeyType="next"
                             onSubmitEditing={() => {
                                 cityIdRef.current?.focus();
@@ -267,6 +290,7 @@ const CreateAdvertiser: React.FC = () => {
 
                         <Input
                             ref={phoneRef}
+                            value={advertiser?.phone}
                             name="phone"
                             icon="phone"
                             keyboardType="number-pad"
@@ -281,6 +305,8 @@ const CreateAdvertiser: React.FC = () => {
 
                         <SegmentsSelect
                             ref={segmentIdRef}
+                            value={advertiser?.segment_id}
+                            required={true}
                             name="segment_id"
                             icon="tag"
                             returnKeyType="next"
@@ -290,13 +316,15 @@ const CreateAdvertiser: React.FC = () => {
                         />
 
                         <PlansSelect
-                            ref={planIdRef}
-                            name="plan_id"
-                            icon="tag"
-                            returnKeyType="next"
-                            onSubmitEditing={() => {
-                                planIdRef.current?.focus();
-                            }}
+                          ref={planIdRef}
+                          value={advertiser?.plan_id}
+                          required={true}
+                          name="plan_id"
+                          icon="tag"
+                          returnKeyType="next"
+                          onSubmitEditing={() => {
+                            planIdRef.current?.focus();
+                          }}
                         />
 
                         <Hr/>
@@ -333,4 +361,4 @@ const CreateAdvertiser: React.FC = () => {
     );
 }
 
-export default CreateAdvertiser;
+export default EditAdvertiser;

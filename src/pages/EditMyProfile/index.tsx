@@ -40,7 +40,7 @@ const EditMyProfile: React.FC = () => {
 
     const [loginIdentification, setLoginIdentification] = useState('');
 
-    const getDDDFormatted = (value) => {
+    const getDDDFormatted = (value: any) => {
 
         if (value.length < 3) {
             return '(' + value;
@@ -51,7 +51,7 @@ const EditMyProfile: React.FC = () => {
         return `(${ddd})${number}`;
     }
 
-    const getFormattedNumber = (value) => {
+    const getFormattedNumber = (value: any) => {
 
         if (value.length < 8) {
             return value;
@@ -76,7 +76,7 @@ const EditMyProfile: React.FC = () => {
 
     }
 
-    const cleanLoginIdentification = (value) => {
+    const cleanLoginIdentification = (value: any) => {
         if (value.includes('(') && value.includes(')')) {
             value = value.replace('-', '');
         }
@@ -84,7 +84,7 @@ const EditMyProfile: React.FC = () => {
         return value.replace('(', '').replace(')', '');
     }
 
-    const onChangeAddMaskCellphone = async (inputValue) => {
+    const onChangeAddMaskCellphone = async (inputValue:string) => {
 
         let value = cleanLoginIdentification(inputValue);
 
@@ -189,9 +189,6 @@ const EditMyProfile: React.FC = () => {
                         navigation.goBack();
                     })
                     .catch((error) => {
-
-                        console.log(error.response);
-
                         let message = 'Não foi possível atualizar seu cadastro, por favor tente novamente.';
 
                         if (422 === error.response.status) {

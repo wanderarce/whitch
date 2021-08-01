@@ -1,6 +1,6 @@
 import React, {forwardRef, useEffect, useRef, useState} from "react";
 import ModalSelector from "react-native-modal-selector";
-import {TextInput, TextInputProps} from "react-native";
+import {Alert, TextInput, TextInputProps} from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import {useField} from "@unform/core";
 import {ContainerCity, ContainerState, ModalStyle} from "./style";
@@ -75,12 +75,14 @@ const StateInput: React.RefForwardingComponent<InputRef, InputProps> = ({name, .
         });
     }
 
-    const loadUserCityAndState = async (id) => {
+    const loadUserCityAndState = async (id: any) => {
 
         id = parseInt(id);
 
         if (isNaN(id)) {
-            return null;
+          inputValueRef.current.value='';
+          inputValueRef.current?.clear();
+          return null;
         }
 
         inputValueRef.current.value = id;
@@ -112,21 +114,21 @@ const StateInput: React.RefForwardingComponent<InputRef, InputProps> = ({name, .
 
         loadUserCityAndState(rest.value);
 
-        if (rest.requiredCity === true) {
-            setDefaultCitySelectLabel(defaultCitySelectLabel + '*')
-            setCurrentCityLabel(defaultCitySelectLabel + '*');
+        if (rest.requiredCity === true ) {
+            setDefaultCitySelectLabel(defaultCitySelectLabel )
+            setCurrentCityLabel(defaultCitySelectLabel);
         }
 
-        if (rest.requiredState === true) {
-            setDefaultStateSelectLabel(defaultStateSelectLabel + '*')
-            setCurrentStateLabel(defaultStateSelectLabel + '*');
+        if (rest.requiredState === true ) {
+            setDefaultStateSelectLabel(defaultStateSelectLabel)
+            setCurrentStateLabel(defaultStateSelectLabel );
         }
 
     }, [fieldName, registerField])
 
 
     useEffect(() => {
-        loadUserCityAndState(rest.value);
+      loadUserCityAndState(rest.value);
     }, [rest.value]);
 
 
@@ -146,8 +148,8 @@ const StateInput: React.RefForwardingComponent<InputRef, InputProps> = ({name, .
                         setCurrentCityLabel(defaultCitySelectLabel);
                         inputValueRef.current.value = undefined;
                         loadCities(option.value);
-                        if (rest.onSelectedState !== undefined) {
-                            rest.onSelectedState(option.value);
+                        if (rest?.onSelectedState !== undefined) {
+                            rest?.onSelectedState(option.value);
                         }
                     }}
                 >

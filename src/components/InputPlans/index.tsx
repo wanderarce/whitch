@@ -6,6 +6,7 @@ import {useField} from "@unform/core";
 import {Container, ModalStyle} from "./style";
 import {mainColor} from "../../utils/Util";
 import api from "../../services/api";
+import { Alert } from "react-native";
 
 interface InputProps extends TextInputProps {
     name: string;
@@ -37,6 +38,20 @@ const PlansSelect: React.RefForwardingComponent<InputRef, InputProps> = ({name, 
         });
     };
 
+    const loadPlan = async (id: any) => {
+
+      id = parseInt(id);
+      if (isNaN(id)) {
+          return null;
+      }
+      inputValueRef.current.value = id;
+      plans.forEach(element => {
+        if(element.id == id){
+          setCurrentLabel(element.name);
+        }
+      });
+  }
+
     useEffect(function () {
 
         registerField<string>({
@@ -54,12 +69,14 @@ const PlansSelect: React.RefForwardingComponent<InputRef, InputProps> = ({name, 
         });
 
         loadSegments();
+        // if(rest.value != null && rest.value != undefined)
+        //   loadPlan(rest.value);
 
     }, [fieldName, registerField])
 
     useEffect(function () {
-        if (rest.required === true) {
-
+      //Alert.alert('p', JSON.stringify(rest));
+      if (rest.required === true) {
             const oldLabel = defaultSelectLabel;
 
             if (currentPlanTypeLabel === oldLabel) {
@@ -67,7 +84,12 @@ const PlansSelect: React.RefForwardingComponent<InputRef, InputProps> = ({name, 
             }
         }
     });
-    
+
+    useEffect(() => {
+      loadPlan(rest.value);
+    }, [rest.value]);
+
+
     return (
         <>
             <Container>
@@ -76,7 +98,7 @@ const PlansSelect: React.RefForwardingComponent<InputRef, InputProps> = ({name, 
                       style={ModalStyle.icon}/>
                 <ModalSelector
                     data={plans}
-                    labelExtractor={item => `${item.name} - ${item.description}`}
+                    labelExtractor={item => `${item?.name} - ${item?.description}`}
                     keyExtractor={item => item.id}
                     style={ModalStyle.style}
                     onChange={(option) => {

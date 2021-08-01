@@ -26,8 +26,6 @@ const ListAds: React.FC = () => {
         const title = await AsyncStorage.getItem('adsPageTitle');
         const ads = await AsyncStorage.getItem('adsPageList');
 
-        console.log(ads);
-
         setTitlePage(title);
         setAds(JSON.parse(ads));
     };

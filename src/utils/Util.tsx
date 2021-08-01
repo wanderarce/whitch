@@ -99,8 +99,6 @@ export const myProfile = async () => {
 
             profile.isActiveAdvertiser = profile.advertiser != undefined && profile.advertiser.status === true;
 
-            console.log(profile);
-
             return profile;
         })
         .catch((error) => {
@@ -276,7 +274,6 @@ export const getPointAdsByAdvertiserId = async (id) => {
 
     return await api.get(`advertisers/${id}/point-ads`, config)
         .then((response) => {
-            console.log(response.data.data);
             return response.data.data;
         })
         .catch((error) => {
@@ -349,7 +346,6 @@ export const getMyGroupByTermAndCityId = async (term = undefined, cityId = undef
         config.params.segmentId = segmentId;
     }
 
-    console.log(423423432, config);
 
     return await api.get(`me/groups`, config)
         .then((response) => {
@@ -429,7 +425,6 @@ export const getAllFreeAds = async () => {
             return response.data.data;
         })
         .catch((error) => {
-            console.log(error.response);
             return [];
         });
 };
@@ -499,7 +494,6 @@ export const getMyFreeAds = async () => {
             return response.data.data;
         })
         .catch((error) => {
-            console.log(error);
             return [];
         });
 };
@@ -536,7 +530,6 @@ export const getPointAdsById = async (id: string) => {
             return response.data.data;
         })
         .catch((error) => {
-            console.log(error);
             return null;
         });
 };
@@ -572,7 +565,6 @@ export const getMemberByGroupIds = async (id: number) => {
             return response.data.data;
         })
         .catch((error) => {
-            console.log(error);
             return [];
         });
 };

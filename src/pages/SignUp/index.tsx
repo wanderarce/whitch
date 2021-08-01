@@ -8,7 +8,7 @@ import {
 
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
@@ -41,6 +41,7 @@ interface SignUpFormData {
     name: string;
     email: string;
     password: string;
+    cellphone: string;
 }
 
 
@@ -57,18 +58,17 @@ const SignUp: React.FC = () => {
 
     const [loginIdentification, setLoginIdentification] = useState('');
 
-    const getDDDFormatted = (value) => {
+    const getDDDFormatted = (value: string) => {
 
         if (value.length < 3) {
             return '(' + value;
         }
-
         const ddd = value.substr(0, 2);
         const number = value.substr(2)
         return `(${ddd})${number}`;
     }
 
-    const getFormattedNumber = (value) => {
+    const getFormattedNumber = (value: any) => {
 
         if (value.length < 8) {
             return value;
@@ -93,7 +93,7 @@ const SignUp: React.FC = () => {
 
     }
 
-    const cleanLoginIdentification = (value) => {
+    const cleanLoginIdentification = (value: any) => {
         if (value.includes('(') && value.includes(')')) {
             value = value.replace('-', '');
         }
@@ -101,52 +101,68 @@ const SignUp: React.FC = () => {
         return value.replace('(', '').replace(')', '');
     }
 
-    const onChangeAddMaskCellphone = async (inputValue) => {
+    const onChangeAddMaskCellphone = async (inputValue: string) => {
+        if(inputValue != undefined && inputValue != null && inputValue.trim() != ""){
+          let value = cleanLoginIdentification(inputValue);
+          value = getDDDFormatted(value);
+          value = getFormattedNumber(value);
+          setLoginIdentification(value);
+          await AsyncStorage.setItem('signUpCellphone', value);
 
-        let value = cleanLoginIdentification(inputValue);
-
-        value = getDDDFormatted(value);
-        value = getFormattedNumber(value);
-
-        setLoginIdentification(value);
-        await AsyncStorage.setItem('signUpCellphone', value);
+        }
         return;
     }
 
+    const clearForm = async () => {
+      formRef.current?.reset();
+      clearText();
+      return;
+
+    };
+    const clearText = useCallback(() => {
+      stateRef.current?.clear();
+      stateRef.current?.setNativeProps({ text: ""});
+      passwordInputRef.current?.clear();
+      passwordInputRef.current?.setNativeProps({ text: "" });
+      PasswordConfirmationInputRef.current?.clear();
+      PasswordConfirmationInputRef.current?.setNativeProps({ text: "" });
+    }, []);
     const handleSignUp = useCallback(
+
         async (data: SignUpFormData) => {
             try {
 
                 const cellphoneFormatted = await AsyncStorage.getItem('signUpCellphone')
                 data.cellphone = cleanLoginIdentification(cellphoneFormatted);
-
                 formRef.current?.setErrors({});
-                const schema = Yup.object().shape({
-                    password_confirmation: Yup.string()
-                        .oneOf([Yup.ref('password')], 'As senhas informadas devem ser iguais'),
-                    password: Yup.string().min(6, 'A senha deve possui no mínimo 6 dígitos'),
-                    city_id: Yup.string().required('Necessário informar um estado e uma cidade'),
-                    cellphone: Yup.string().min(10, 'Necessário informar o DDD e o Telefone'),
-                    email: Yup.string()
-                        .required('E-mail obrigatório')
-                        .email('Digite um e-mail válido'),
-                    name: Yup.string().required('Nome obrigatório').min(3, 'O nome deve possuir no mínimo 3 caracteres!'),
+                const schema = yup.object().shape({
+                    password_confirmation: yup.string()
+                        .oneOf([yup.ref('password')],
+                         'As senhas informadas devem ser iguais'),
+                    password: yup.string().min(6, 'A senha deve possui no mínimo 6 dígitos'),
+                    city_id: yup.string().required('Necessário informar um estado e uma cidade'),
+                    cellphone: yup.string().required('Necessário informar o DDD e o Telefone')
+                    .min(10, 'Necessário informar o DDD e o Telefone'),
+                    email: yup.string()
+                        .email('Digite um e-mail válido')
+                        .required('E-mail obrigatório'),
+                    name: yup.string().required('Nome obrigatório')
+                    .min(3, 'O nome deve possuir no mínimo 3 caracteres!'),
                 });
-
                 await schema.validate(data, {
                     abortEarly: true,
                 });
 
                 await api.post('/users', data)
                     .then((response) => {
-                        Alert.alert('Cadastro realizado com sucesso!', 'Você já pode fazer login na aplicação!');
-                        navigation.navigate('SignIn');
+                      clearForm();
+                      Alert.alert('Cadastro realizado com sucesso!', 'Você já pode fazer login na aplicação!');
+                      navigation.navigate('SignIn');
+
                     })
                     .catch((error) => {
 
                         let message = 'Não foi possível realizar seu cadastro, por favor tente novamente.';
-
-                        console.log(error)
 
                         if (422 === error.response.status) {
                             const errors = error.response.data.errors;
@@ -160,14 +176,12 @@ const SignUp: React.FC = () => {
                     });
 
             } catch (error) {
-                if (error instanceof Yup.ValidationError) {
+                if (error instanceof yup.ValidationError) {
                     Alert.alert('Ocorreu um erro', error.message);
                     // const errors = getValidationErrors(error);
                     // formRef.current?.setErrors(errors);
                     return;
                 }
-
-                console.log(error)
                 Alert.alert('Erro no cadastro', 'Ocorreu um erro ao fazer cadastro, tente novamente.');
             }
         },
@@ -179,13 +193,10 @@ const SignUp: React.FC = () => {
             <KeyboardAwareScrollView
                 style={{flex: 1}}
             >
-
-
                 <Container>
-
                     <Icon name="chevron-left" size={30} color={mainColor}
-                          onPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate('SignIn')}/>
-
+                          onPress={() => navigation.canGoBack() ?
+                          navigation.goBack() : navigation.navigate('SignIn')}/>
                     <View>
                         <Title>CADASTRE-SE</Title>
                     </View>
@@ -194,7 +205,6 @@ const SignUp: React.FC = () => {
                         ref={formRef}
                         onSubmit={handleSignUp}
                     >
-
                         <Input
                             ref={nameInputRef}
                             autoCapitalize="words"
@@ -241,10 +251,8 @@ const SignUp: React.FC = () => {
                             ref={stateRef}
                             name="city_id"
                             icon="lock"
-                            secureTextEntry
-                            textContentType="newPassword"
-                            requiredCity={true}
                             requiredState={true}
+                            requiredCity={true}
                             returnKeyType="send"
                             onSubmitEditing={() => {
                                 stateRef.current?.focus();
@@ -262,7 +270,7 @@ const SignUp: React.FC = () => {
                             textContentType="newPassword"
                             returnKeyType="send"
                             onSubmitEditing={() => {
-                                cellphoneRef.current?.focus();
+                              passwordInputRef.current?.focus();
                             }}
                         />
 
@@ -277,7 +285,7 @@ const SignUp: React.FC = () => {
                             textContentType="newPassword"
                             returnKeyType="send"
                             onSubmitEditing={() => {
-                                formRef.current?.submitForm();
+                                PasswordConfirmationInputRef.current?.submitForm();
                             }}
                         />
 

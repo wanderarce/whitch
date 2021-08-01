@@ -40,7 +40,7 @@ const ListSDebitPointAds: React.FC = () => {
     const loadPointAds = async () => {
        setLoading(true);
         const freeAds = await getPointAds();
-        console.log(freeAds);
+
         setFreeAds(freeAds);
         setLoading(false);
     };
@@ -140,7 +140,6 @@ const ListSDebitPointAds: React.FC = () => {
 
     const hiddenCommentIds = (id) => {
         const currentShow = showComments.filter((item) => id != item);
-        console.log(currentShow);
         setShowComments(currentShow);
     }
 

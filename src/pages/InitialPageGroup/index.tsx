@@ -122,8 +122,7 @@ const InitialPageGroup: React.FC = () => {
         //retur item;
     }
     const addCommentLock = (id) => {
-        setCommentsLocked([...commentsLocked, id])
-        console.log(commentsLocked);
+        setCommentsLocked([...commentsLocked, id]);
     }
 
     const removeCommentLock = async (id) => {
@@ -635,7 +634,7 @@ const InitialPageGroup: React.FC = () => {
                                                                 }}
                                                           >
                                                               <Image
-                                                                  source={profile.liked_ads.includes(item.id) ? likedImg : likeImg}
+                                                                  source={profile?.liked_ads.includes(item.id) ? likedImg : likeImg}
                                                                   style={{
                                                                       width: "100%",
                                                                       height: "100%",

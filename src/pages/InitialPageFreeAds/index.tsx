@@ -216,7 +216,6 @@ const InitialPageFreeAds: React.FC = () => {
 
     const hiddenCommentIds = (id) => {
         const currentShow = showComments.filter((item) => id != item);
-        console.log(currentShow);
         setShowComments(currentShow);
     }
 
@@ -256,8 +255,6 @@ const InitialPageFreeAds: React.FC = () => {
     };
 
     const updateAdsList = (ads) => {
-
-        console.log(ads.id);
 
         const newAds = freeAds.map((item) => {
             if (item.id === ads.id) {
@@ -409,7 +406,9 @@ const InitialPageFreeAds: React.FC = () => {
                 <Container style={{backgroundColor: "#FFF"}}>
 
 
-                    <FlatList data={freeAds} keyExtractor={((item, index) => item.id.toString())}
+                    <FlatList data={freeAds}
+
+                    keyExtractor={((item, index) => item.id.toString())}
                               renderItem={({item}) => {
                                   return (
                                       <>

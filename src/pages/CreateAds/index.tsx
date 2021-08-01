@@ -19,7 +19,7 @@ import {
 } from "../../utils/Util";
 import Footer from "../../components/Footer";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import * as Yup from "yup";
+import * as yup from "yup";
 import api from "../../services/api";
 import SegmentsSelect from "../../components/InputSegments";
 import Checkbox from "../../components/InputCheckbox";
@@ -86,7 +86,6 @@ const CreateAds: React.FC = () => {
         const selectedGroups = await getSelectedGroups();
         const groups = [id, ...selectedGroups];
         await AsyncStorage.setItem('ads.groups', groups.join(','));
-        console.log(groups);
     };
 
     const getSelectedGroups = async () => {
@@ -100,7 +99,7 @@ const CreateAds: React.FC = () => {
         const selectedGroups = await getSelectedGroups();
         const groups = selectedGroups.filter((value) => value != id);
         await AsyncStorage.setItem('ads.groups', [groups].join(','));
-        console.log(groups);
+
     };
 
     const formatDate = (date: Date): string => {
@@ -113,16 +112,13 @@ const CreateAds: React.FC = () => {
 
     const loadGroups = async () => {
         const groups = await getAllActiveGroups();
-        console.log(groups);
+
         setGroups(groups);
     }
 
      const loadProfile = async () => {
          const profile = await loadMainProfile();
-
-         console.log(profile);
-
-         if(!profile.isActiveAdvertiser){
+         if(profile == null || profile.isActiveAdvertiser != true){
              Alert.alert('Cadastro inativo', 'Seu cadastro de anunciante no momento está inativo');
              return navigation.goBack();
          }
@@ -180,17 +176,12 @@ const CreateAds: React.FC = () => {
         async (data) => {
             try {
 
-
                 const sending = await canSend();
-
                 if (!sending) {
                     return;
                 }
-
                 await setIsSending(true);
-
                 const config = await headerAuthorizationOrAlert();
-
                 if (config === null) {
                     navigation.navigate('Login');
                     return null;
@@ -199,7 +190,6 @@ const CreateAds: React.FC = () => {
                 await setTempAds(data);
 
                 const expiryDate = await AsyncStorage.getItem('ads.expiry_date');
-
                 const imagesString = await AsyncStorage.getItem('img');
                 const image = imagesString === null ? null : JSON.parse(imagesString);
 
@@ -213,25 +203,23 @@ const CreateAds: React.FC = () => {
                 data['expiry_date'] = expiryDate === null ? '' : expiryDate;
                 data['groups'] = await getSelectedGroups();
                 data['point_coins'] = data['point_coins'] === '' ? undefined : data['point_coins'];
-
                 formRef.current?.setErrors({});
-                const schema = Yup.object().shape({
-                    groups: Yup.array()
+                const schema = yup.object().shape({
+                    groups: yup.array()
                         .min(1, 'É necessário escolher no mínimo um grupo'),
-                    img: Yup.string().required('É necessário escolher uma imagem'),
-                    point_coins: Yup.number()
+                    img: yup.string().required('É necessário escolher uma imagem'),
+                    point_coins: yup.number()
                         .required('É necessário informar a quantidade de pontos moedas')
                         .min(0, 'O valo mínimo de pontos moedas é 0'),
-                    voucher: Yup.string().required('É necessário informar um voucher')
+                    voucher: yup.string().required('É necessário informar um voucher')
                         .min(4, 'O voucher deve possuir no mínimo 4 caracter!'),
-                    segment_id: Yup.string()
-                        .required('Necessário escolher o segmento'),
-                    expiry_date: Yup.string()
+                    segment_id: yup.string().required('Necessário escolher o segmento'),
+                    expiry_date: yup.string()
                         .required('Uma data de expiração deve ser informada'),
-                    description: Yup.string()
+                    description: yup.string()
                         .required('A descrição do anúncio é obrigatório')
                         .min(10, 'A descrição deve possuir no mínimo 10 caracteres!'),
-                    title: Yup.string()
+                    title: yup.string()
                         .required('O título é obrigatório')
                         .min(10, 'O nome deve possuir no mínimo 10 caracteres!'),
                 });
@@ -259,7 +247,6 @@ const CreateAds: React.FC = () => {
                             message
                         );
 
-                        console.log(JSON.stringify(error.response.data));
                         setIsSending(false);
 
                     });
@@ -269,7 +256,7 @@ const CreateAds: React.FC = () => {
                 setIsSending(false);
                 let errorMessage = 'Ocorreu um erro ao fazer cadastro, tente novamente.';
 
-                if (error instanceof Yup.ValidationError) {
+                if (error instanceof yup.ValidationError) {
                     errorMessage = error.message;
                 }
 

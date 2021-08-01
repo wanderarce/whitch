@@ -64,6 +64,7 @@ import UpdatePage from "../pages/UpdatePage";
 import Contact from "../pages/Contact";
 import AboutWhichIs from "../pages/AboutWhichIs";
 import AboutApp from "../pages/AboutApp";
+import EditAdvertiser from "../pages/EditAdvertiser";
 import { createDrawerNavigator, useIsDrawerOpen } from '@react-navigation/drawer';
 import homeImg from "../assets/menu/HOME.png";
 import myProfileImg from "../assets/menu/MEU-PERFIL.png";
@@ -80,6 +81,7 @@ import blockAccountImg from "../assets/menu/BLOCK-ACCOUNT.png";
 import footerLogo from "../assets/footer-logo.png";
 import cellphone from "../assets/phone.png";
 import emailImg from "../assets/email.png";
+import editProfileImg from "../assets/edit-profile.png";
 import {
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
@@ -93,6 +95,7 @@ import {loadMainProfile, logout, blockMyAccount, getLikedAds, getLikedFreeAds, m
 import AsyncStorage from "@react-native-community/async-storage";
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAuth } from '../hooks/auth';
+import { style } from 'src/components/Form/style';
 
 const Stack = createStackNavigator();
 const Auth = createDrawerNavigator();
@@ -167,6 +170,7 @@ const AuthRoutes: React.FC = () => {
         <Auth.Screen name="Contact" component={Contact}/>
         <Auth.Screen name="AboutWhichIs" component={AboutWhichIs}/>
         <Auth.Screen name="AboutApp" component={AboutApp}/>
+        <Auth.Screen name="EditAdvertiser" component={EditAdvertiser}/>
 
     </Auth.Navigator>
 };
@@ -382,7 +386,10 @@ if(profile == null || profile == undefined){
           <Drawer.Item
             label="SEJA UM ANUNCIANTE"
             onPress={() => props.navigation.navigate('CreateAdvertiser')}
-            style={styles.labelStyle }
+            style={{
+              display: profile === null || profile?.isAdvertiser !== true
+                              ? "flex"
+                              : "none",}}
             icon={({  color, size }) =>
               <Image
               height={size}
@@ -411,6 +418,7 @@ if(profile == null || profile == undefined){
             />
           }
             />
+
           <Drawer.Item
               label="CLASSIFICADOS MARCADO LEGAL"
               onPress = {()=>{loadLikedFreeAds()}}
@@ -493,7 +501,7 @@ if(profile == null || profile == undefined){
 
 
         <Drawer.Section title="PERFIL ANUNCIANTE"
-        style={{display: profile.isAdvertiser ? 'flex' : 'none'}}
+        style={{display: (profile!== null && profile?.isAdvertiser === true && profile?.isActiveAdvertiser  === true) ? 'flex' : 'none'}}
         >
           <Drawer.Item
             label="MINHA CONTA"
@@ -553,7 +561,7 @@ if(profile == null || profile == undefined){
               height={size}
               width={size}
               resizeMethod="auto"
-              source={pointImg}
+              source={editProfileImg}
               style={{height: 25, width:25, resizeMode:'contain',
              marginRight: -20}}
             />
@@ -576,7 +584,7 @@ if(profile == null || profile == undefined){
           }
           /> */}
         </Drawer.Section>
-        <Drawer.Section  style={{display: profile.isAdmin ? 'flex' : 'none'}} title="ADMINSTRADOR" >
+        <Drawer.Section  style={{display: (profile != null && profile?.isAdmin == true) ? 'flex' : 'none'}} title="ADMINSTRADOR" >
             <Drawer.Item
               label="ANÚNCIOS"
               onPress = {()=>{props.navigation.navigate("SponsoredAds")}}
@@ -586,7 +594,7 @@ if(profile == null || profile == undefined){
                 height={size}
                 width={size}
                 resizeMethod="auto"
-                source={pointImg}
+                source={freeAdsImg}
                 style={{height: 25, width:25, resizeMode:'contain',
               marginRight: -20}}
               />
@@ -601,7 +609,7 @@ if(profile == null || profile == undefined){
                 height={size}
                 width={size}
                 resizeMethod="auto"
-                source={pointImg}
+                source={groupsImg}
                 style={{height: 25, width:25, resizeMode:'contain',
               marginRight: -20}}
               />
@@ -684,6 +692,23 @@ if(profile == null || profile == undefined){
             />
 
         </Drawer.Section>
+
+        <Drawer.Item
+              label="SAIR"
+              onPress = {()=>{runLogout()}}
+              style={styles.labelStyle }
+              icon={({  color, size }) =>
+                <Image
+                height={size}
+                width={size}
+                resizeMethod="auto"
+                source={logoutImg}
+                style={{height: 25, width:25, resizeMode:'contain',
+              marginRight: -20}}
+              />
+            }
+            />
+
         <Image source={footerLogo} style={{width: "100%", height:100, resizeMode: "center"}}/>
 
       </View>
